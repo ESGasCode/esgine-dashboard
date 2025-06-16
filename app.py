@@ -57,13 +57,10 @@ elif section == "About":
     st.markdown("""
     ESGine is built on the ESG-as-Code™ framework to empower:
     
-st.markdown("""
-<ul>
-  <li><strong>SMEs</strong> preparing ESG disclosures</li>
-  <li><strong>Investors</strong> assessing sustainability risks</li>
-  <li><strong>Auditors & Regulators</strong> validating ESG claims</li>
-</ul>
-""", unsafe_allow_html=True)
+- **SMEs** preparing ESG disclosures
+- **Investors** assessing sustainability risks
+- **Auditors & Regulators** validating ESG claims
+
 
 
     
