@@ -105,8 +105,33 @@ elif section == "Upload Report":
             st.success("✅ Compliance analysis completed.")
             st.json(result)
 
-        except Exception as e:
-            st.error(f"🚨 Error during compliance check: {str(e)}")
+# Show results
+    st.success("✅ Compliance analysis completed.")
+    st.json(result)
+
+# Visual Display
+    st.markdown("### 📈 Visual Summary")
+
+# Progress bar
+    st.write("**Compliance Score**")
+    st.progress(result["score"] / 100)
+
+# Pie chart (pass vs fail)
+    import matplotlib.pyplot as plt
+
+labels = ['Passed', 'Failed']
+sizes = [result["passed"], result["failed"]]
+colors = ['#2ecc71', '#e74c3c']
+
+fig, ax = plt.subplots()
+ax.pie(sizes, labels=labels, autopct='%1.1f%%', startangle=90, colors=colors)
+ax.axis('equal')
+st.pyplot(fig)
+
+# Catch errors
+except Exception as e:
+    st.error(f"🚨 Error during compliance check: {str(e)}")
+
 
 
 
