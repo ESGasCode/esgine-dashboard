@@ -21,8 +21,8 @@ This is the official frontend dashboard for **ESGine**, a RegTech SaaS platform 
 ```bash
 pip install -r requirements.txt
 streamlit run app.py
+```
 
----
 
 ## 💼 ESG-as-Code Integration
 This dashboard relies on the ESG-as-Code™ backend logic for regulatory interpretation and rule matching.
