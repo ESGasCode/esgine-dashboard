@@ -124,7 +124,7 @@ elif section == "About":
 - **SMEs** preparing ESG disclosures
 - **Investors** assessing sustainability risks
 - **Auditors & Regulators** validating ESG claims
-
+ """)
 
 
     
