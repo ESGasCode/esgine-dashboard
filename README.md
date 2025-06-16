@@ -27,6 +27,14 @@ streamlit run app.py
 ## 💼 ESG-as-Code Integration
 This dashboard relies on the ESG-as-Code™ backend logic for regulatory interpretation and rule matching.
 
+
+## 🔁 ESGine Architecture
+
+This diagram shows how ESGine consumes ESG-as-Code™ rules to deliver real-time scoring, validation, and compliance outputs for various users.
+
+![ESG Flow Diagram](assets/esg-flow-diagram.png)
+
+
 ---
 
 Created by [Isaiah Owolabi](https://github.com/ESGasCode)  
