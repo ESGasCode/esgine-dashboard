@@ -41,7 +41,7 @@ if section == "Home":
     """)
 
 
-# Upload Section# Upload Section
+# Upload Section
 elif section == "Upload Report":
     st.subheader("📤 Upload Your ESG Report")
 
