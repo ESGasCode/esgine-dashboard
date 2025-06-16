@@ -60,10 +60,12 @@ elif section == "About":
     - **SMEs** preparing ESG disclosures
     - **Investors** assessing sustainability risks
     - **Auditors & Regulators** validating ESG claims
+
     
 #### 🔁 ESGine Ecosystem Overview
     """)
     st.image("assets/esg-flow-diagram.png", caption="How ESGine integrates ESG-as-Code™ into a usable platform.")
+
 
 # Footer
 st.markdown("---")
