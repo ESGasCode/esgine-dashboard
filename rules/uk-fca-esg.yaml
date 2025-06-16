@@ -1,0 +1,20 @@
+id: FCA_ESG_001
+authority: FCA
+jurisdiction: UK
+required_fields:
+  - methodology_description
+  - rating_definition
+  - data_sources
+  - conflict_of_interest_policy
+  - governance_review_process
+compliance_check:
+  - field: methodology_description
+    must_exist: true
+  - field: rating_definition
+    must_contain: ["impact", "risk"]
+  - field: data_sources
+    must_exist: true
+  - field: conflict_of_interest_policy
+    must_contain: ["mitigation", "independent"]
+  - field: governance_review_process
+    must_contain: ["annual", "oversight"]

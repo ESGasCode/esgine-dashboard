@@ -1,0 +1,20 @@
+id: SFDR_ESG_001
+authority: European Commission
+jurisdiction: EU
+required_fields:
+  - ghg_emissions_intensity
+  - fossil_fuel_investment_share
+  - un_oecd_violation_exposure
+  - board_gender_diversity
+  - mitigation_measures_description
+compliance_check:
+  - field: ghg_emissions_intensity
+    must_exist: true
+  - field: fossil_fuel_investment_share
+    must_be_less_than: 10
+  - field: un_oecd_violation_exposure
+    must_exist: true
+  - field: board_gender_diversity
+    must_be_greater_than: 30
+  - field: mitigation_measures_description
+    must_contain: ["plan", "target"]

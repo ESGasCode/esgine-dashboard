@@ -1,0 +1,21 @@
+id: SEC_ESG_001
+authority: SEC
+jurisdiction: US
+required_fields:
+  - scope_1_emissions
+  - scope_2_emissions
+  - climate_risk_description
+  - board_oversight_description
+compliance_check:
+  - field: scope_1_emissions
+    must_exist: true
+  - field: scope_2_emissions
+    must_exist: true
+  - field: climate_risk_description
+    must_contain: ["physical", "transition"]
+  - field: board_oversight_description
+    must_contain: ["risk", "strategy", "oversight"]
+  - field: scenario_analysis_used
+    optional: true
+  - field: ghg_assurance_statement
+    optional: true

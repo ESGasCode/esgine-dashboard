@@ -1,0 +1,8 @@
+id: ISSB_IFRS_S1_S2_001
+authority: ISSB
+jurisdiction: Global
+required_fields:
+  - climate_risk_disclosure
+compliance_check:
+  - field: "climate_risk_disclosure"
+    must_exist: true

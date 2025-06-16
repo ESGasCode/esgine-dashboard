@@ -1,0 +1,13 @@
+id: ISSB_IFRS_S2_NLP_001
+authority: ISSB
+jurisdiction: Global
+rule_type: narrative_check
+keywords:
+  - "Scope 1"
+  - "Scope 2"
+  - "greenhouse gas emissions"
+  - "IFRS S2"
+compliance_check:
+  - description: >
+      Must mention Scope 1 and Scope 2 GHG emissions in the context of IFRS S2.
+    logic: keywords_present
