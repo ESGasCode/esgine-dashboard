@@ -57,9 +57,9 @@ elif section == "About":
     st.markdown("""
     ESGine is built on the ESG-as-Code™ framework to empower:
     
-    - **SMEs** preparing ESG disclosures
-    - **Investors** assessing sustainability risks
-    - **Auditors & Regulators** validating ESG claims
+``- **SMEs** preparing ESG disclosures
+``- **Investors** assessing sustainability risks
+``- **Auditors & Regulators** validating ESG claims
 
     
 #### 🔁 ESGine Ecosystem Overview
