@@ -106,7 +106,7 @@ elif section == "Upload Report":
             # Run compliance check
             result = run_rule_engine(report_data, rules)
 
-                # Show results
+    # Show results
     st.success("✅ Compliance analysis completed.")
     st.json(result)
 
