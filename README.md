@@ -4,23 +4,31 @@
 
 This is the official frontend dashboard for **ESGine**, a RegTech SaaS platform built on top of the ESG-as-Code™ framework. It enables users to upload ESG reports, validate them against regulatory rules (e.g. SEC, SFDR, FCA), and view compliance results.
 
-## 🚀 Features
-- Upload and validate ESG reports (`.json`)
-- Apply compliance rules from global regulators
-- Real-time visual feedback and results
-- Powered by Streamlit and Python
+## 🔧 Features
+- Upload ESG reports (`.json`)
+- Apply regulatory rules from SEC, SFDR, FCA, ISSB
+- Real-time compliance results
+- Streamlit-powered UI
 
 ## 📁 Folder Structure
-- `app.py` — Main Streamlit app
-- `rules/` — Contains ESG rule logic in YAML
-- `parser/` — Rule parser and engine
-- `assets/` — Branding files (e.g., logo)
+- `app.py` — Main dashboard app
+- `parser/` — Compliance rule engine and logic
+- `rules/` — YAML-formatted regulatory rulepacks
+- `assets/` — Brand visuals (e.g., logo.png)
+- `.gitignore`, `README.md`, `requirements.txt`
 
-## 👨🏽‍💻 Getting Started
-1. Clone the repo
-2. Install dependencies: `pip install -r requirements.txt`
-3. Run: `streamlit run app.py`
+## ⚙️ Setup & Run Locally
+```bash
+pip install -r requirements.txt
+streamlit run app.py
 
 ---
 
-Built with ❤️ by [@ESGasCode](https://github.com/ESGasCode)
+## 💼 ESG-as-Code Integration
+This dashboard relies on the ESG-as-Code™ backend logic for regulatory interpretation and rule matching.
+
+---
+
+Created by [Isaiah Owolabi](https://github.com/ESGasCode)  
+Website: [https://esgascode.com](https://esgascode.com)
+
