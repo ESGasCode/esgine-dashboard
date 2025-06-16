@@ -93,8 +93,8 @@ elif section == "Upload Report":
         st.markdown("### 📊 Compliance Results")
 
     try:
-    # Load selected rule YAML
-    with open(rule_path, "r") as f:
+        # Load selected rule YAML
+        with open(rule_path, "r") as f:
         rules = yaml.safe_load(f)
 
     # Parse file content into dictionary
