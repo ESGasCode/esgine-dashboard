@@ -93,18 +93,22 @@ elif section == "Upload Report":
         st.markdown("### 📊 Compliance Results")
 
         try:
-            # Load selected rule YAML
-            with open(rule_path, "r") as f:
-                rules = yaml.safe_load(f)
+    # Load selected rule YAML
+    with open(rule_path, "r") as f:
+        rules = yaml.safe_load(f)
 
-            # Parse file content into dictionary
-            if file_type == "application/json":
-                report_data = content
-            else:
-                report_data = {"report_text": text}
+    # Parse file content into dictionary
+    if file_type == "application/json":
+        report_data = content
+    elif file_type in [
+        "application/pdf",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        "text/plain"
+    ]:
+        report_data = {"report_text": text}
 
-            # Run compliance check
-            result = run_rule_engine(report_data, rules)
+    # Run compliance check
+    result = run_rule_engine(report_data, rules)
 
     # Show results
     st.success("✅ Compliance analysis completed.")
@@ -124,7 +128,7 @@ elif section == "Upload Report":
     ax.axis('equal')
     st.pyplot(fig)
 
-    # ✅ INSERT EXPORT CODE HERE (BEFORE `except`)
+    # Export Section
     import io
     import base64
     import json
@@ -177,7 +181,6 @@ elif section == "Upload Report":
 
 except Exception as e:
     st.error(f"🚨 Error during compliance check: {str(e)}")
-
 
 # About Section
 elif section == "About":
