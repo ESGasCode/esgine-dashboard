@@ -85,7 +85,35 @@ elif section == "Upload Report":
             text = uploaded_file.read().decode("utf-8")
             st.text_area("📄 Text File Content", text, height=300)
 
-        st.info("🔧 Analysis feature coming soon.")
+        from parser.rule_engine import run_rule_engine
+import yaml
+import json
+
+# After file upload & parsing logic
+st.markdown("### 📊 Compliance Results")
+
+try:
+    # Load selected rule YAML
+    with open(rule_path, "r") as f:
+        rules = yaml.safe_load(f)
+
+    # Parse file content into dictionary
+    if file_type == "application/json":
+        report_data = content
+
+    elif file_type in ["application/pdf", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "text/plain"]:
+        report_data = {"report_text": text}  # Wrap extracted text into a dict
+
+    # Run compliance check
+    result = run_rule_engine(report_data, rules)
+
+    # Show results
+    st.success("✅ Compliance analysis completed.")
+    st.json(result)
+
+except Exception as e:
+    st.error(f"🚨 Error during compliance check: {str(e)}")
+
 
 
 # About Section
