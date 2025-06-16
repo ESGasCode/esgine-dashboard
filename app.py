@@ -92,43 +92,41 @@ elif section == "Upload Report":
         st.markdown("### 📊 Compliance Results")
 
         try:
-            with open(rule_path, "r") as f:
-                rules = yaml.safe_load(f)
+    # Load selected rule YAML
+    with open(rule_path, "r") as f:
+        rules = yaml.safe_load(f)
 
-            if file_type == "application/json":
-                report_data = content
-            else:
-                report_data = {"report_text": text}
+    # Parse file content into dictionary
+    if file_type == "application/json":
+        report_data = content
 
-            result = run_rule_engine(report_data, rules)
+    elif file_type in ["application/pdf", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "text/plain"]:
+        report_data = {"report_text": text}
 
-# Show results
+    # Run compliance check
+    result = run_rule_engine(report_data, rules)
+
+    # Show results
     st.success("✅ Compliance analysis completed.")
     st.json(result)
 
-# Visual Display
+    # Visual Summary
     st.markdown("### 📈 Visual Summary")
 
-# Progress bar
     st.write("**Compliance Score**")
     st.progress(result["score"] / 100)
 
-# Pie chart (pass vs fail)
     import matplotlib.pyplot as plt
+    labels = ['Passed', 'Failed']
+    sizes = [result["passed"], result["failed"]]
+    colors = ['#2ecc71', '#e74c3c']
+    fig, ax = plt.subplots()
+    ax.pie(sizes, labels=labels, autopct='%1.1f%%', startangle=90, colors=colors)
+    ax.axis('equal')
+    st.pyplot(fig)
 
-labels = ['Passed', 'Failed']
-sizes = [result["passed"], result["failed"]]
-colors = ['#2ecc71', '#e74c3c']
-
-fig, ax = plt.subplots()
-ax.pie(sizes, labels=labels, autopct='%1.1f%%', startangle=90, colors=colors)
-ax.axis('equal')
-st.pyplot(fig)
-
-# Catch errors
 except Exception as e:
     st.error(f"🚨 Error during compliance check: {str(e)}")
-
 
 
 
