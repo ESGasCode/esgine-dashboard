@@ -32,14 +32,14 @@ section = st.sidebar.radio("Go to", ["Home", "Upload Report", "About"])
 # Home Section
 if section == "Home":
     st.subheader("🌍 Welcome to ESGine Dashboard")
-    st.write("""
-        ESGine is a RegTech SaaS platform powered by ESG-as-Code™. 
-        Our goal is to simplify ESG compliance using programmable rules and real-time dashboards.
-        
-        - Upload and analyze ESG reports
-        - Track compliance with regulations (FCA, SEC, SFDR, ISSB)
-        - Receive instant feedback and compliance scores
+    st.markdown("""
+    **ESGine** is a **RegTech SaaS platform** powered by **ESG-as-Code™**, designed to simplify ESG compliance using **programmable rules** and **real-time dashboards**.
+
+    - **Upload and analyze ESG reports** effortlessly  
+    - **Track compliance** with leading regulations — **FCA**, **SEC**, **SFDR**, and **ISSB**  
+    - **Receive instant feedback** and **automated compliance scores**
     """)
+
 
 # Upload Section
 elif section == "Upload Report":
