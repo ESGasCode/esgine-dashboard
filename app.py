@@ -91,7 +91,8 @@ elif section == "Upload Report":
 
         st.markdown("### 📊 Compliance Results")
 
-        try:
+        # Wrap everything inside try block with proper indentation
+try:
     # Load selected rule YAML
     with open(rule_path, "r") as f:
         rules = yaml.safe_load(f)
@@ -100,7 +101,11 @@ elif section == "Upload Report":
     if file_type == "application/json":
         report_data = content
 
-    elif file_type in ["application/pdf", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "text/plain"]:
+    elif file_type in [
+        "application/pdf",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        "text/plain"
+    ]:
         report_data = {"report_text": text}
 
     # Run compliance check
@@ -112,7 +117,6 @@ elif section == "Upload Report":
 
     # Visual Summary
     st.markdown("### 📈 Visual Summary")
-
     st.write("**Compliance Score**")
     st.progress(result["score"] / 100)
 
@@ -127,8 +131,7 @@ elif section == "Upload Report":
 
 except Exception as e:
     st.error(f"🚨 Error during compliance check: {str(e)}")
-
-
+    
 
 # About Section
 elif section == "About":
