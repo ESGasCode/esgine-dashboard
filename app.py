@@ -88,50 +88,43 @@ elif section == "Upload Report":
         # === Run Rule Engine Analysis ===
         from parser.rule_engine import run_rule_engine
         import yaml
+        import matplotlib.pyplot as plt
 
         st.markdown("### 📊 Compliance Results")
 
-        # Wrap everything inside try block with proper indentation
-try:
-    # Load selected rule YAML
-    with open(rule_path, "r") as f:
-        rules = yaml.safe_load(f)
+        try:
+            # Load selected rule YAML
+            with open(rule_path, "r") as f:
+                rules = yaml.safe_load(f)
 
-    # Parse file content into dictionary
-    if file_type == "application/json":
-        report_data = content
+            # Parse file content into dictionary
+            if file_type == "application/json":
+                report_data = content
+            else:
+                report_data = {"report_text": text}
 
-    elif file_type in [
-        "application/pdf",
-        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-        "text/plain"
-    ]:
-        report_data = {"report_text": text}
+            # Run compliance check
+            result = run_rule_engine(report_data, rules)
 
-    # Run compliance check
-    result = run_rule_engine(report_data, rules)
+            # Show results
+            st.success("✅ Compliance analysis completed.")
+            st.json(result)
 
-    # Show results
-    st.success("✅ Compliance analysis completed.")
-    st.json(result)
+            # Visual Summary
+            st.markdown("### 📈 Visual Summary")
+            st.write("**Compliance Score**")
+            st.progress(result["score"] / 100)
 
-    # Visual Summary
-    st.markdown("### 📈 Visual Summary")
-    st.write("**Compliance Score**")
-    st.progress(result["score"] / 100)
+            labels = ['Passed', 'Failed']
+            sizes = [result["passed"], result["failed"]]
+            colors = ['#2ecc71', '#e74c3c']
+            fig, ax = plt.subplots()
+            ax.pie(sizes, labels=labels, autopct='%1.1f%%', startangle=90, colors=colors)
+            ax.axis('equal')
+            st.pyplot(fig)
 
-    import matplotlib.pyplot as plt
-    labels = ['Passed', 'Failed']
-    sizes = [result["passed"], result["failed"]]
-    colors = ['#2ecc71', '#e74c3c']
-    fig, ax = plt.subplots()
-    ax.pie(sizes, labels=labels, autopct='%1.1f%%', startangle=90, colors=colors)
-    ax.axis('equal')
-    st.pyplot(fig)
-
-except Exception as e:
-    st.error(f"🚨 Error during compliance check: {str(e)}")
-    
+        except Exception as e:
+            st.error(f"🚨 Error during compliance check: {str(e)}")
 
 # About Section
 elif section == "About":
@@ -139,15 +132,13 @@ elif section == "About":
     st.markdown("""
     ESGine is built on the ESG-as-Code™ framework to empower:
     
-- **SMEs** preparing ESG disclosures
-- **Investors** assessing sustainability risks
-- **Auditors & Regulators** validating ESG claims
- 
-    
+- **SMEs** preparing ESG disclosures  
+- **Investors** assessing sustainability risks  
+- **Auditors & Regulators** validating ESG claims  
+
 #### 🔁 ESGine Ecosystem Overview
     """)
     st.image("assets/esg-flow-diagram.png", caption="How ESGine integrates ESG-as-Code™ into a usable platform.")
-
 
 # Footer
 st.markdown("---")
