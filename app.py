@@ -44,12 +44,49 @@ if section == "Home":
 # Upload Section
 elif section == "Upload Report":
     st.subheader("📤 Upload Your ESG Report")
-    uploaded_file = st.file_uploader("Choose a JSON file", type=["json"])
+
+    uploaded_file = st.file_uploader(
+        "Choose a file (JSON, PDF, DOCX, or TXT)",
+        type=["json", "pdf", "docx", "txt"]
+    )
+
+    st.markdown("### 🏛️ Select Rule Set")
+    rule_options = {
+        "UK – FCA": "rules/uk-fca-esg.yaml",
+        "EU – SFDR": "rules/eu-sfdr.yaml",
+        "US – SEC": "rules/us-sec-esg.yaml",
+        "Global – ISSB (IFRS S1 & S2)": "rules/issb/ifrs-s1-s2.yaml"
+    }
+    selected_rule = st.selectbox("Choose regulatory framework", list(rule_options.keys()))
+    rule_path = rule_options[selected_rule]
+
     if uploaded_file:
-        data = uploaded_file.read().decode("utf-8")
-        st.json(data)
+        file_type = uploaded_file.type
         st.success("File uploaded successfully!")
+
+        if file_type == "application/json":
+            import json
+            content = json.load(uploaded_file)
+            st.json(content)
+
+        elif file_type == "application/pdf":
+            from PyPDF2 import PdfReader
+            reader = PdfReader(uploaded_file)
+            text = "\n".join([page.extract_text() for page in reader.pages if page.extract_text()])
+            st.text_area("📄 Extracted PDF Text", text, height=300)
+
+        elif file_type == "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
+            import docx
+            doc = docx.Document(uploaded_file)
+            text = "\n".join([p.text for p in doc.paragraphs])
+            st.text_area("📄 Extracted DOCX Text", text, height=300)
+
+        elif file_type == "text/plain":
+            text = uploaded_file.read().decode("utf-8")
+            st.text_area("📄 Text File Content", text, height=300)
+
         st.info("🔧 Analysis feature coming soon.")
+
 
 # About Section
 elif section == "About":
