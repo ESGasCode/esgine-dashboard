@@ -196,7 +196,6 @@ elif section == "About":
     """)
     st.image("assets/esg-flow-diagram.png", caption="How ESGine integrates ESG-as-Code™ into a usable platform.")
 
-    # Footer inside this section
     st.markdown("---")
     from datetime import datetime
     st.caption(f"© {datetime.now().year} ESGine – Built with ❤️ and ESG-as-Code™")
