@@ -94,8 +94,8 @@ elif section == "Upload Report":
 
     try:
         # Load selected rule YAML
-        with open(rule_path, "r") as f:
-        rules = yaml.safe_load(f)
+            with open(rule_path, "r") as f:
+            rules = yaml.safe_load(f)
 
     # Parse file content into dictionary
     if file_type == "application/json":
