@@ -182,7 +182,7 @@ try:
 except Exception as e:
     st.error(f"🚨 Error during compliance check: {str(e)}")
 
-# ✅ About Section - Correctly positioned as part of the `if-elif` tree
+# ✅ About Section
 elif section == "About":
     from datetime import datetime  # Import should be at the top, but this ensures no error
 
