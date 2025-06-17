@@ -212,7 +212,8 @@ elif section == "Upload Report":
         except Exception as e:
             st.error(f"🚨 Error during compliance check: {str(e)}")
         
-            show_footer()
+    st.markdown("---")
+    show_footer()
 
 # ✅ About Section
 elif section == "About":    
@@ -227,7 +228,8 @@ elif section == "About":
 #### 🔁 ESGine Ecosystem Overview
     """)
     
-        show_footer()
+    st.markdown("---")
+    show_footer()
 
 # ✅ Contact Section
 elif section == "Contact":
@@ -243,6 +245,6 @@ elif section == "Contact":
         st.success(f"Thanks {name}, your message has been received!")
         # Optionally save to database or send via email here
    
-        show_footer()
-
+    st.markdown("---")
+    show_footer()   
 
