@@ -179,8 +179,8 @@ try:
         mime="application/pdf"
     )
 
-    except Exception as e:
-        st.error(f"🚨 Error during compliance check: {str(e)}")
+except Exception as e:
+    st.error(f"🚨 Error during compliance check: {str(e)}")
     
 
 # ✅ About Section
