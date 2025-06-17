@@ -198,10 +198,10 @@ elif section == "About":
 
     st.image("assets/esg-flow-diagram.png", caption="How ESGine integrates ESG-as-Code™ into a usable platform.")
 
-# ✅ About Section
-elif section == "About":    
-    st.subheader("📘 About ESGine")
-    st.markdown("""
+# ✅ Contact Section
+elif section == "Contact":    
+    st.subheader("📘 Contact")
+  
     
     st.markdown("---")
     st.caption(f"© {datetime.now().year} ESGine – Built with ❤️ and ESG-as-Code™")
