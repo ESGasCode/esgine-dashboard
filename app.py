@@ -182,3 +182,20 @@ try:
 except Exception as e:
     st.error(f"🚨 Error during compliance check: {str(e)}")
 
+# ✅ About Section
+elif section == "About":
+    st.subheader("📘 About ESGine")
+    st.markdown("""
+**ESGine** is built on the **ESG-as-Code™** framework to empower:
+
+- **SMEs** preparing ESG disclosures  
+- **Investors** assessing sustainability risks  
+- **Auditors & Regulators** validating ESG claims  
+
+#### 🔁 ESGine Ecosystem Overview
+    """)
+
+    st.image("assets/esg-flow-diagram.png", caption="How ESGine integrates ESG-as-Code™ into a usable platform.")
+
+    st.markdown("---")
+    st.caption(f"© {datetime.now().year} ESGine – Built with ❤️ and ESG-as-Code™")
