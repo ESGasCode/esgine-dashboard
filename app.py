@@ -211,8 +211,7 @@ elif section == "Upload Report":
 
         except Exception as e:
             st.error(f"🚨 Error during compliance check: {str(e)}")
-
-          show_footer()
+        show_footer()
 
 # ✅ About Section
 elif section == "About":    
