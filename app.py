@@ -62,9 +62,7 @@ if section == "Home":
 
     """)
 
-    st.image("assets/esgine-architecture-outline.png", use_column_width=True)
-
-     
+    st.image("assets/esg-flow-diagram.png", use_container_width=True)
 
 # Upload Section
 elif section == "Upload Report":
