@@ -187,14 +187,13 @@ except Exception as e:
 elif section == "About":    
     st.subheader("📘 About ESGine")
     st.markdown("""
+**ESGine** is built on the **ESG-as-Code™** framework to empower:
 
-    **ESGine** is built on the **ESG-as-Code™** framework to empower:
+- **SMEs** preparing ESG disclosures  
+- **Investors** assessing sustainability risks  
+- **Auditors & Regulators** validating ESG claims  
 
-    - **SMEs** preparing ESG disclosures  
-    - **Investors** assessing sustainability risks  
-    - **Auditors & Regulators** validating ESG claims  
-
-    #### 🔁 ESGine Ecosystem Overview
+#### 🔁 ESGine Ecosystem Overview
     """)
 
     st.image("assets/esg-flow-diagram.png", caption="How ESGine integrates ESG-as-Code™ into a usable platform.")
