@@ -182,7 +182,7 @@ try:
 except Exception as e:
     st.error(f"🚨 Error during compliance check: {str(e)}")
 
-# About Section
+# ✅ About Section - Correctly positioned as part of the `if-elif` tree
 elif section == "About":
     st.subheader("📘 About ESGine")
     st.markdown("""
