@@ -185,9 +185,8 @@ except Exception as e:
 
 # ✅ About Section
 elif section == "About":
-    from datetime import datetime  # Import should be at the top, but this ensures no error
     st.subheader("📘 About ESGine")
-    st.markdown("""
+    st.markdown("...")
 **ESGine** is built on the **ESG-as-Code™** framework to empower:
 
 - **SMEs** preparing ESG disclosures  
