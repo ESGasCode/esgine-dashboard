@@ -39,7 +39,7 @@ if section == "Home":
     - **Track compliance** with leading regulations — **FCA**, **SEC**, **SFDR**, and **ISSB**  
     - **Receive instant feedback** and **automated compliance scores**
     """)
-     st.caption(f"© {datetime.now().year} ESGine – Built with ❤️ and ESG-as-Code™")
+     
 
 # Upload Section
 elif section == "Upload Report":
@@ -181,7 +181,7 @@ elif section == "Upload Report":
     
     except Exception as e:
         st.error(f"🚨 Error during compliance check: {str(e)}")
-     st.caption(f"© {datetime.now().year} ESGine – Built with ❤️ and ESG-as-Code™")        
+      
 
 # ✅ About Section
 elif section == "About":    
