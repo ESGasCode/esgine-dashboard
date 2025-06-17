@@ -36,13 +36,34 @@ section = st.sidebar.radio("Go to", ["Home", "Upload Report", "About", "Contact"
 # Home Section
 if section == "Home":
     st.subheader("🌍 Welcome to ESGine Dashboard")
-    st.markdown("""
-    **ESGine** is a **RegTech SaaS platform** powered by **ESG-as-Code™**, designed to simplify ESG compliance using **programmable rules** and **real-time dashboards**.
 
-    - **Upload and analyze ESG reports** effortlessly  
-    - **Track compliance** with leading regulations — **FCA**, **SEC**, **SFDR**, and **ISSB**  
-    - **Receive instant feedback** and **automated compliance scores**
+    st.markdown("""
+    ESGine is a **RegTech SaaS platform** powered by **ESG-as-Code™**.
+
+    Our mission is to simplify ESG compliance using programmable rules and real-time dashboards.
+
+    ### 🔑 Key Features:
+    - 📤 **Upload & analyze** ESG reports (JSON, PDF, DOCX, TXT)
+    - 📊 **Track compliance** with global frameworks (FCA, SEC, SFDR, ISSB)
+    - ⚡ **Instant scoring** & visual feedback
+    - 📄 **Download reports** (JSON or PDF)
+    - 🔐 Secure, no data stored
+
+    ---
+    ### 🚀 Get Started
+    👉 Go to the **Upload Report** tab to begin your ESG analysis.
+
+    ---
+    ### 📚 Supported Frameworks:
+    - 🇬🇧 FCA (UK)
+    - 🇪🇺 SFDR (EU)
+    - 🇺🇸 SEC (USA)
+    - 🌐 ISSB (Global)
+
     """)
+
+    st.image("assets/esgine-architecture-outline.png", use_column_width=True)
+
      
 
 # Upload Section
