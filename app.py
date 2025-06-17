@@ -226,7 +226,7 @@ elif section == "About":
 #### 🔁 ESGine Ecosystem Overview
     """)
 
-show_footer()
+        show_footer()
 
 # ✅ Contact Section
 elif section == "Contact":
@@ -242,6 +242,6 @@ elif section == "Contact":
         st.success(f"Thanks {name}, your message has been received!")
         # Optionally save to database or send via email here
 
-show_footer()
+        show_footer()
 
 
