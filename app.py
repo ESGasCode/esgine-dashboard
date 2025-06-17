@@ -228,7 +228,7 @@ elif section == "About":
 
 show_footer()
 
-# --- Contact Page ---
+# ✅ Contact Section
 elif section == "Contact":
     st.subheader("📬 Contact Us")
     with st.form("contact_form"):
