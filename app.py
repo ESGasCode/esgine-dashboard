@@ -10,7 +10,7 @@ import mimetypes
 from PIL import Image
 from fpdf import FPDF
 sys.path.append(os.path.abspath(".."))  # or the correct path
-from parser.rule_engine import run_rule_engine
+from esg_parser.rule_engine import run_rule_engine
 
 # Set page config
 st.set_page_config(
