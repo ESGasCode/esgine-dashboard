@@ -238,9 +238,9 @@ elif section == "Contact":
         subscribe = st.checkbox("Keep me updated with ESGine insights")
         submitted = st.form_submit_button("Send Message")
 
-        if submitted:
-            st.success(f"Thanks {name}, your message has been received!")
-            # Optionally save to database or send via email here
+    if submitted:
+        st.success(f"Thanks {name}, your message has been received!")
+        # Optionally save to database or send via email here
 
 show_footer()
 
