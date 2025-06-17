@@ -184,6 +184,8 @@ except Exception as e:
 
 # ✅ About Section - Correctly positioned as part of the `if-elif` tree
 elif section == "About":
+    from datetime import datetime  # Import should be at the top, but this ensures no error
+
     st.subheader("📘 About ESGine")
     st.markdown("""
 **ESGine** is built on the **ESG-as-Code™** framework to empower:
@@ -194,8 +196,9 @@ elif section == "About":
 
 #### 🔁 ESGine Ecosystem Overview
     """)
+
     st.image("assets/esg-flow-diagram.png", caption="How ESGine integrates ESG-as-Code™ into a usable platform.")
 
     st.markdown("---")
-    from datetime import datetime
     st.caption(f"© {datetime.now().year} ESGine – Built with ❤️ and ESG-as-Code™")
+
