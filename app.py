@@ -219,5 +219,5 @@ elif section == "About":
 
     st.image("assets/esg-flow-diagram.png", caption="How ESGine integrates ESG-as-Code™ into a usable platform.")
     st.markdown("---")
- st.caption(f"© {datetime.now().year} ESGine – Built with ❤️ and ESG-as-Code™")
+    st.caption(f"© {datetime.now().year} ESGine – Built with ❤️ and ESG-as-Code™")
 
