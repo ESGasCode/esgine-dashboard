@@ -1,3 +1,6 @@
 streamlit
+matplotlib
 PyYAML
-pillow
+fpdf
+python-docx
+PyPDF2
