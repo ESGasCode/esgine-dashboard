@@ -201,4 +201,3 @@ elif section == "About":
 
     st.markdown("---")
     st.caption(f"© {datetime.now().year} ESGine – Built with ❤️ and ESG-as-Code™")
-
