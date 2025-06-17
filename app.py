@@ -182,6 +182,8 @@ try:
 except Exception as e:
     st.error(f"🚨 Error during compliance check: {str(e)}")
     
+
+# ✅ About Section
 elif section == "About":    
     st.subheader("📘 About ESGine")
     st.markdown("""
