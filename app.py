@@ -179,8 +179,8 @@ try:
         mime="application/pdf"
     )
 
-except Exception as e:
-    st.error(f"🚨 Error during compliance check: {str(e)}")
+    except Exception as e:
+        st.error(f"🚨 Error during compliance check: {str(e)}")
     
 
 # ✅ About Section
@@ -197,11 +197,5 @@ elif section == "About":
     """)
 
     st.image("assets/esg-flow-diagram.png", caption="How ESGine integrates ESG-as-Code™ into a usable platform.")
-
-# ✅ Contact Section
-elif section == "Contact":    
-    st.subheader("📘 Contact")
-  
-    
     st.markdown("---")
     st.caption(f"© {datetime.now().year} ESGine – Built with ❤️ and ESG-as-Code™")
