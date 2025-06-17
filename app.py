@@ -220,6 +220,9 @@ elif section == "About":
     st.image("assets/esg-flow-diagram.png", caption="How ESGine integrates ESG-as-Code™ into a usable platform.")
     st.markdown("---")
 
+# ✅ Universal Footer: Add this AFTER all if/elif blocks
+from datetime import datetime
+
     st.markdown("""
 <hr style="border: none; height: 1px; background-color: #DDD;" />
 <div style='text-align: center; font-size: 0.85rem; color: #888;'>
