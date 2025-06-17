@@ -92,10 +92,10 @@ elif section == "Upload Report":
 
         st.markdown("### 📊 Compliance Results")
 
-    try:
-        # Load selected rule YAML
-            with open(rule_path, "r") as f:
-            rules = yaml.safe_load(f)
+try:
+    # Load selected rule YAML
+    with open(rule_path, "r") as f:
+        rules = yaml.safe_load(f)
 
     # Parse file content into dictionary
     if file_type == "application/json":
@@ -181,6 +181,7 @@ elif section == "Upload Report":
 
 except Exception as e:
     st.error(f"🚨 Error during compliance check: {str(e)}")
+
 
 # About Section
 elif section == "About":
