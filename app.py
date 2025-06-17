@@ -62,8 +62,6 @@ if section == "Home":
 
     """)
 
-    st.image("assets/esg-flow-diagram.png", use_container_width=True)
-
 # Upload Section
 elif section == "Upload Report":
     st.subheader("📤 Upload Your ESG Report")
