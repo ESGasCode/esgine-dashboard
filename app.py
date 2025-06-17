@@ -1,10 +1,14 @@
 import streamlit as st
-import os
-import yaml
-import mimetypes
-import json
-from PIL import Image
 from datetime import datetime
+import base64
+import json
+import yaml
+import matplotlib.pyplot as plt
+import os
+import mimetypes
+from PIL import Image
+from fpdf import FPDF
+from parser.rule_engine import run_rule_engine
 
 # Set page config
 st.set_page_config(
@@ -29,9 +33,14 @@ with col2:
 
 st.markdown("---")
 
-# Sidebar
+# --- Sidebar Navigation ---
 st.sidebar.header("Navigation")
 section = st.sidebar.radio("Go to", ["Home", "Upload Report", "About", "Contact"])
+
+# --- Footer function ---
+def show_footer():
+    st.markdown("---")
+    st.caption(f"\u00a9 {datetime.now().year} ESGine – Built with ❤️ and ESG-as-Code™")
 
 # Home Section
 if section == "Home":
@@ -61,6 +70,7 @@ if section == "Home":
     - 🌐 ISSB (Global)
 
     """)
+    show_footer()
 
 # Upload Section
 elif section == "Upload Report":
@@ -202,7 +212,7 @@ elif section == "Upload Report":
         except Exception as e:
             st.error(f"🚨 Error during compliance check: {str(e)}")
 
-      
+      show_footer()
 
 # ✅ About Section
 elif section == "About":    
@@ -217,7 +227,22 @@ elif section == "About":
 #### 🔁 ESGine Ecosystem Overview
     """)
 
-    st.image("assets/esg-flow-diagram.png", caption="How ESGine integrates ESG-as-Code™ into a usable platform.")
-    st.markdown("---")
-    st.caption(f"© {datetime.now().year} ESGine – Built with ❤️ and ESG-as-Code™")
+show_footer()
+
+# --- Contact Page ---
+elif section == "Contact":
+    st.subheader("📬 Contact Us")
+    with st.form("contact_form"):
+        name = st.text_input("Your Name")
+        email = st.text_input("Your Email")
+        message = st.text_area("Your Message")
+        subscribe = st.checkbox("Keep me updated with ESGine insights")
+        submitted = st.form_submit_button("Send Message")
+
+        if submitted:
+            st.success(f"Thanks {name}, your message has been received!")
+            # Optionally save to database or send via email here
+
+    show_footer()
+
 
