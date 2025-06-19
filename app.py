@@ -261,7 +261,7 @@ elif section == "Upload Report":
         except Exception as e:
             st.error(f"🚨 Error during compliance check: {str(e)}")
         
-    st.markdown("---")
+    
     
     def show_footer():
         current_year = datetime.now().year
