@@ -295,10 +295,7 @@ elif section == "Contact":
         # Optionally save to database or send via email here
    
     st.markdown("---")
-    show_footer()   
-
-    import streamlit as st
-    from datetime import datetime
+  
 
     def show_footer():
         current_year = datetime.now().year
