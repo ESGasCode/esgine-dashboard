@@ -4,3 +4,4 @@ PyYAML
 fpdf
 python-docx
 PyPDF2
+docx2txt
