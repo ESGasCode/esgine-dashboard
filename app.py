@@ -3,7 +3,7 @@ from datetime import datetime
 import base64
 import json
 import yaml
-echo "docx2txt" >> requirements.txt
+import docx2txt
 import PyPDF2
 import matplotlib.pyplot as plt
 import os
