@@ -311,3 +311,5 @@ elif section == "Contact":
             """,
             unsafe_allow_html=True
         )
+    # This ensures footer is always displayed
+    show_footer()
