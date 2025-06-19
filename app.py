@@ -264,7 +264,7 @@ elif section == "Upload Report":
         
     st.markdown("---")
     
-   def show_footer():
+    def show_footer():
         current_year = datetime.now().year
         st.markdown("---")
         st.markdown(
