@@ -248,24 +248,21 @@ elif section == "Upload Report":
         
     st.markdown("---")
     
-from datetime import datetime
+    from datetime import datetime
 
-def show_footer():
-    current_year = datetime.now().year
-    st.markdown("---")
-    st.markdown(
-        f"""
-        <div style='text-align: center; padding-top: 10px; font-size: 0.9em; color: grey;'>
-            &copy; {current_year} ESGine™ by <strong>ESG-as-Code™</strong> | Simplifying ESG Compliance with AI<br>
-            Built with 💻 Streamlit | 🌍 UK – US – EU – Global<br>
-            📩 Contact us: <a href='mailto:info@esgascode.com'>info@esgascode.com</a>
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
-
-
-
+    def show_footer():
+        current_year = datetime.now().year
+        st.markdown("---")
+        st.markdown(
+            f"""
+            <div style='text-align: center; padding-top: 10px; font-size: 0.9em; color: grey;'>
+                &copy; {current_year} ESGine™ by <strong>ESG-as-Code™</strong> | Simplifying ESG Compliance with AI<br>
+                Built with 💻 Streamlit | 🌍 UK – US – EU – Global<br>
+                📩 Contact us: <a href='mailto:info@esgascode.com'>info@esgascode.com</a>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
 
 # ✅ About Section
 elif section == "About":    
