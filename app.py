@@ -332,7 +332,7 @@ elif section == "Contact":
             f"""
             <div style="text-align: center; font-size: 14px; color: #555;">
                 ESGine™ | ESG-as-Code™ | © {current_year} - ESGine Inc. All rights reserved.<br>
-                <a href="mailto:info@esgine.io">info@esgine.io</a> | <a href="www.esgine.io">www.esgine.io</a>
+                <a href="mailto:info@esgine.io">info@esgine.io</a> | <a>www.esgine.io</a>
             </div>
             """,
             unsafe_allow_html=True
