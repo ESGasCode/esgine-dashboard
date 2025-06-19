@@ -9,8 +9,13 @@ import sys
 import mimetypes
 from PIL import Image
 from fpdf import FPDF
-sys.path.append(os.path.abspath(".."))  # or the correct path
-from esg_parser.rule_engine import run_rule_engine
+
+# Add the esgine-backend directory to the path
+backend_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'esgine-backend'))
+sys.path.insert(0, backend_path)
+
+# Now you can import the parser
+from parser.rule_engine import run_rule_engine
 
 # Set page config
 st.set_page_config(
