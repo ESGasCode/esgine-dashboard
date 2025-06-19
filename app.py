@@ -79,19 +79,18 @@ if section == "Home":
     """)
        
     def show_footer():
-            current_year = datetime.now().year
-            st.markdown("---")
-            st.markdown(
-                f"""
-                <div style="text-align: center; font-size: 14px; color: #555;">
-                    ESGine™ | ESG-as-Code™ | © {current_year} ESGasCode Ltd.<br>
-                    <a href="mailto:legal@esgascode.com">legal@esgascode.com</a> | 
-                    <a href="mailto:info@esgine.io">info@esgine.io</a>
-                </div>
-                """,
-                unsafe_allow_html=True
-            )
-        # This ensures footer is always displayed
+        current_year = datetime.now().year
+        st.markdown("---")
+        st.markdown(
+            f"""
+            <div style="text-align: center; font-size: 14px; color: #555;">
+                ESGine™ | ESG-as-Code™ | © {current_year} - ESGine Inc. All rights reserved.<br>
+                <a href="mailto:info@esgine.io">info@esgine.io</a> | <a>www.esgine.io</a>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+    # This ensures footer is always displayed
     show_footer()
 
 
@@ -301,7 +300,7 @@ elif section == "About":
             f"""
             <div style="text-align: center; font-size: 14px; color: #555;">
                 ESGine™ | ESG-as-Code™ | © {current_year} - ESGine Inc. All rights reserved.<br>
-                <a href="mailto:info@esgine.io">info@esgine.io</a> | <a href="www.esgine.io">www.esgine.io</a>
+                <a href="mailto:info@esgine.io">info@esgine.io</a> | <a>www.esgine.io</a>
             </div>
             """,
             unsafe_allow_html=True
