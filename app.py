@@ -328,7 +328,7 @@ elif section == "Contact":
    
     st.markdown("---")
 
-    def show_footer():
+def show_footer():
     st.markdown("---")
     st.markdown(
         f"""
