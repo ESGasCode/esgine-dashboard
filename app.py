@@ -3,6 +3,8 @@ from datetime import datetime
 import base64
 import json
 import yaml
+import docx2txt
+import PyPDF2
 import matplotlib.pyplot as plt
 import os
 import sys
@@ -114,120 +116,90 @@ elif section == "Upload Report":
     rule_path = rule_options[selected_rule]
 
     if uploaded_file:
-        import mimetypes
+        import mimetypes, yaml, json, pandas as pd
+        from parser.rule_engine import run_rule_engine
+
         file_type, _ = mimetypes.guess_type(uploaded_file.name)
-        st.success("File uploaded successfully!")
+        st.success(f"✅ File uploaded: `{uploaded_file.name}`")
 
-        text = ""
-        content = {}
-
-        if file_type == "application/json":
-            import json
-            try:
-                raw = uploaded_file.read().decode("utf-8")
-                content = json.loads(raw)
-                st.json(content)
-            except json.JSONDecodeError:
-                st.warning("⚠️ Could not parse JSON file.")
-
-        elif file_type == "application/pdf":
-            from PyPDF2 import PdfReader
-            try:
-                reader = PdfReader(uploaded_file)
-                text = "\n".join(page.extract_text() for page in reader.pages if page.extract_text())
-                st.text_area("📄 Extracted PDF Text", text, height=300)
-            except Exception:
-                st.warning("⚠️ Could not read PDF content.")
-
-        elif file_type == "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
-            import docx
-            try:
-                doc = docx.Document(uploaded_file)
-                text = "\n".join([p.text for p in doc.paragraphs])
-                st.text_area("📄 Extracted DOCX Text", text, height=300)
-            except Exception:
-                st.warning("⚠️ Could not read DOCX content.")
-
-        elif file_type == "text/plain":
-            try:
-                text = uploaded_file.read().decode("utf-8")
-                st.text_area("📄 Text File Content", text, height=300)
-            except Exception:
-                st.warning("⚠️ Could not read TXT content.")
-
-        st.markdown("### 📊 Compliance Results")
+        report_data = {}
+        extracted_text = ""
 
         try:
-            import yaml
+            if file_type == "application/json":
+                raw = uploaded_file.read().decode("utf-8")
+                report_data = json.loads(raw)
+                st.json(report_data)
+
+            elif file_type == "application/pdf":
+                from PyPDF2 import PdfReader
+                reader = PdfReader(uploaded_file)
+                extracted_text = "\n".join(page.extract_text() for page in reader.pages if page.extract_text())
+                st.text_area("📄 Extracted PDF Text", extracted_text, height=300)
+
+            elif file_type == "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
+                import docx
+                doc = docx.Document(uploaded_file)
+                extracted_text = "\n".join([p.text for p in doc.paragraphs])
+                st.text_area("📄 Extracted DOCX Text", extracted_text, height=300)
+
+            elif file_type == "text/plain":
+                extracted_text = uploaded_file.read().decode("utf-8")
+                st.text_area("📄 Text File Content", extracted_text, height=300)
+
+            # Load Rules
             with open(rule_path, "r") as f:
                 rules = yaml.safe_load(f)
 
-            from parser.rule_engine import run_rule_engine
             if file_type == "application/json":
-                report_data = content
+                input_payload = report_data
             else:
-                report_data = {"report_text": text}
+                input_payload = {"report_text": extracted_text}
 
-            result = run_rule_engine(report_data, rules)
-            st.success("✅ Compliance analysis completed.")
+            # Run Rule Engine
+            result = run_rule_engine(input_payload, rules)
+            st.success("✅ ESG compliance analysis completed.")
+            st.markdown("### 📊 Compliance Results")
             st.json(result)
 
-            # Phase 4 – Rule-by-Rule Breakdown Table
-            import pandas as pd
-            df_rules = pd.DataFrame(result["rules"])
+            # Rule Breakdown
             st.markdown("### 📋 Rule-by-Rule Breakdown")
+            df_rules = pd.DataFrame(result["rules"])
             st.dataframe(df_rules)
 
-            # Phase 5 – Compliance Alerts Based on Score
+            # Alerts
             if result["score"] < 50:
-                st.error("🚨 Your ESG compliance score is below 50%. Urgent action is needed.")
+                st.error("🚨 Score below 50% — urgent compliance gaps.")
             elif result["score"] < 75:
-                st.warning("⚠️ Your ESG compliance score is moderate. Consider improving disclosures.")
+                st.warning("⚠️ Score between 50–75% — room for improvement.")
             else:
-                st.success("✅ Good job! Your ESG compliance score is strong.")
+                st.success("✅ Strong compliance! Keep it up.")
 
-
-            # 📈 Visual Summary - Phase 1
-            st.markdown("### 📈 Compliance Summary")
-
-            # Score progress bar
-            st.write(f"**Compliance Score: {result['score']}%**")
-            st.progress(result["score"] / 100)
-
-            # Breakdown of checks
-            st.write(f"✅ Passed: `{result['passed']}`")
-            st.write(f"❌ Failed: `{result['failed']}`")
-
-
-            st.markdown("### 📈 Visual Summary")
-            st.write("**Compliance Score**")
-            st.progress(result["score"] / 100)
-
+            # Visual Summary
             import matplotlib.pyplot as plt
+            st.markdown("### 📈 Visual Summary")
             labels = ['Passed', 'Failed']
             sizes = [result["passed"], result["failed"]]
-            colors = ['#2ecc71', '#e74c3c']
             fig, ax = plt.subplots()
-            ax.pie(sizes, labels=labels, autopct='%1.1f%%', startangle=90, colors=colors)
+            ax.pie(sizes, labels=labels, autopct='%1.1f%%', startangle=90, colors=['#2ecc71', '#e74c3c'])
             ax.axis('equal')
             st.pyplot(fig)
 
+            # Download JSON
             st.markdown("### 📥 Download Your Results")
-            import base64
-            import io
-            json_result = json.dumps(result, indent=2)
             st.download_button(
                 label="📦 Download JSON Result",
-                data=json_result,
+                data=json.dumps(result, indent=2),
                 file_name="esgine_compliance_result.json",
                 mime="application/json"
             )
 
+            # Download PDF
             from fpdf import FPDF
             class PDF(FPDF):
                 def header(self):
                     self.set_font('Arial', 'B', 14)
-                    self.cell(0, 10, 'ESGine Compliance Report', 0, 1, 'C')
+                    self.cell(0, 10, 'ESGine™ Compliance Report', 0, 1, 'C')
 
                 def footer(self):
                     self.set_y(-15)
@@ -238,31 +210,26 @@ elif section == "Upload Report":
             pdf.add_page()
             pdf.set_font("Arial", size=12)
             pdf.multi_cell(0, 10, f"Selected Rule: {selected_rule}")
-            pdf.multi_cell(0, 10, f"Compliance Score: {result['score']}%")
-            pdf.multi_cell(0, 10, f"✅ Passed Checks: {result['passed']}")
-            pdf.multi_cell(0, 10, f"❌ Failed Checks: {result['failed']}")
+            pdf.multi_cell(0, 10, f"Score: {result['score']}%")
+            pdf.multi_cell(0, 10, f"✅ Passed: {result['passed']} | ❌ Failed: {result['failed']}")
             pdf.ln()
             pdf.set_font("Arial", "B", 12)
             pdf.cell(0, 10, "Rule Breakdown:", ln=True)
             pdf.set_font("Arial", "", 11)
-
             for rule in result["rules"]:
                 status = "✅ PASSED" if rule["status"] else "❌ FAILED"
                 pdf.multi_cell(0, 10, f"- {rule['description']} → {status}")
 
-            pdf_bytes = pdf.output(dest='S').encode('latin-1')
             st.download_button(
                 label="📄 Download PDF Report",
-                data=pdf_bytes,
+                data=pdf.output(dest='S').encode('latin-1'),
                 file_name="esgine_compliance_report.pdf",
                 mime="application/pdf"
             )
 
         except Exception as e:
             st.error(f"🚨 Error during compliance check: {str(e)}")
-        
-    
-    
+            
     def show_footer():
         current_year = datetime.now().year
         st.markdown("---")
