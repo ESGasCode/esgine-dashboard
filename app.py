@@ -157,6 +157,33 @@ elif section == "Upload Report":
             st.success("✅ Compliance analysis completed.")
             st.json(result)
 
+            # Phase 4 – Rule-by-Rule Breakdown Table
+            import pandas as pd
+            df_rules = pd.DataFrame(result["rules"])
+            st.markdown("### 📋 Rule-by-Rule Breakdown")
+            st.dataframe(df_rules)
+
+            # Phase 5 – Compliance Alerts Based on Score
+            if result["score"] < 50:
+                st.error("🚨 Your ESG compliance score is below 50%. Urgent action is needed.")
+            elif result["score"] < 75:
+                st.warning("⚠️ Your ESG compliance score is moderate. Consider improving disclosures.")
+            else:
+                st.success("✅ Good job! Your ESG compliance score is strong.")
+
+
+            # 📈 Visual Summary - Phase 1
+            st.markdown("### 📈 Compliance Summary")
+
+            # Score progress bar
+            st.write(f"**Compliance Score: {result['score']}%**")
+            st.progress(result["score"] / 100)
+
+            # Breakdown of checks
+            st.write(f"✅ Passed: `{result['passed']}`")
+            st.write(f"❌ Failed: `{result['failed']}`")
+
+
             st.markdown("### 📈 Visual Summary")
             st.write("**Compliance Score**")
             st.progress(result["score"] / 100)
@@ -220,7 +247,25 @@ elif section == "Upload Report":
             st.error(f"🚨 Error during compliance check: {str(e)}")
         
     st.markdown("---")
-    show_footer()
+    
+from datetime import datetime
+
+def show_footer():
+    current_year = datetime.now().year
+    st.markdown("---")
+    st.markdown(
+        f"""
+        <div style='text-align: center; padding-top: 10px; font-size: 0.9em; color: grey;'>
+            &copy; {current_year} ESGine™ by <strong>ESG-as-Code™</strong> | Simplifying ESG Compliance with AI<br>
+            Built with 💻 Streamlit | 🌍 UK – US – EU – Global<br>
+            📩 Contact us: <a href='mailto:info@esgascode.com'>info@esgascode.com</a>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+
+
 
 # ✅ About Section
 elif section == "About":    
