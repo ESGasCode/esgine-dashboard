@@ -92,7 +92,7 @@ if section == "Home":
                 unsafe_allow_html=True
             )
         # This ensures footer is always displayed
-        show_footer()
+    show_footer()
 
 
 # Upload Section
