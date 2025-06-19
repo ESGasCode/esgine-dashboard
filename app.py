@@ -236,9 +236,8 @@ elif section == "Upload Report":
         st.markdown(
             f"""
             <div style="text-align: center; font-size: 14px; color: #555;">
-                ESGine™ | ESG-as-Code™ | © {current_year} ESGasCode Ltd.<br>
-                <a href="mailto:legal@esgascode.com">legal@esgascode.com</a> | 
-                <a href="mailto:info@esgine.io">info@esgine.io</a>
+                ESGine™ | ESG-as-Code™ | © {current_year} - ESGine Inc. All rights reserved.<br>
+                <a href="mailto:info@esgine.io">info@esgine.io</a> | <a>www.esgine.io</a>
             </div>
             """,
             unsafe_allow_html=True
