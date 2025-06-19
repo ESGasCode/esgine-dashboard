@@ -248,7 +248,7 @@ elif section == "Upload Report":
         
     st.markdown("---")
     
-    from datetime import datetime
+    show_footer() 
 
     def show_footer():
         current_year = datetime.now().year
@@ -295,7 +295,8 @@ elif section == "Contact":
         # Optionally save to database or send via email here
    
     st.markdown("---")
-  
+
+    show_footer() 
 
     def show_footer():
         current_year = datetime.now().year
