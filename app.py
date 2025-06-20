@@ -12,6 +12,17 @@ import mimetypes
 from PIL import Image
 from fpdf import FPDF
 
+class PDF(FPDF):
+    def header(self):
+        self.set_font('Arial', 'B', 14)
+        self.cell(0, 10, 'ESGine™ Compliance Report', 0, 1, 'C')
+
+    def footer(self):
+        self.set_y(-15)
+        self.set_font('Arial', 'I', 8)
+        self.cell(0, 10, f'Page {self.page_no()}', 0, 0, 'C')
+
+
 # Add the esgine-backend directory to the path
 backend_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'esgine-backend'))
 sys.path.insert(0, backend_path)
@@ -194,43 +205,32 @@ elif section == "Upload Report":
                 mime="application/json"
             )
 
-# Download PDF
-from fpdf import FPDF
+if result:  # Ensure results exist before generating the PDF
+    pdf = PDF()
+    pdf.add_page()
+    pdf.set_font("Arial", size=12)
+    pdf.multi_cell(0, 10, f"Selected Rule: {selected_rule}")
+    pdf.multi_cell(0, 10, f"Score: {result['score']}%")
+    pdf.multi_cell(0, 10, f"✅ Passed: {result['passed']} | ❌ Failed: {result['failed']}")
+    pdf.ln()
+    pdf.set_font("Arial", "B", 12)
+    pdf.cell(0, 10, "Rule Breakdown:", ln=True)
+    pdf.set_font("Arial", "", 11)
 
-class PDF(FPDF):
-    def header(self):
-        self.set_font('Arial', 'B', 14)
-        self.cell(0, 10, 'ESGine Compliance Report', 0, 1, 'C')
+    for rule in result["rules"]:
+        status = "✅ PASSED" if rule["status"] else "❌ FAILED"
+        description = rule.get("description", "No description")
+        pdf.multi_cell(0, 10, f"- {description} → {status}")
 
-    def footer(self):
-        self.set_y(-15)
-        self.set_font('Arial', 'I', 8)
-        self.cell(0, 10, f'Page {self.page_no()}', 0, 0, 'C')
+    # Encode and provide download
+    pdf_bytes = pdf.output(dest='S').encode('latin-1', 'replace')
+    st.download_button(
+        label="📄 Download ESGine™ PDF Report",
+        data=pdf_bytes,
+        file_name="esgine_compliance_report.pdf",
+        mime="application/pdf"
+    )
 
-# ✅ Now instantiate and use it
-pdf = PDF()
-pdf.add_page()
-pdf.set_font("Arial", size=12)
-pdf.multi_cell(0, 10, f"Selected Rule: {selected_rule}")
-pdf.multi_cell(0, 10, f"Score: {result['score']}%")
-pdf.multi_cell(0, 10, f"✅ Passed: {result['passed']} | ❌ Failed: {result['failed']}")
-pdf.ln()
-pdf.set_font("Arial", "B", 12)
-pdf.cell(0, 10, "Rule Breakdown:", ln=True)
-pdf.set_font("Arial", "", 11)
-
-for rule in result["rules"]:
-    status = "PASSED ✅" if rule["status"] else "FAILED ❌"
-    pdf.multi_cell(0, 10, f"- {rule['description']} → {status}")
-
-# Encode and trigger download
-pdf_bytes = pdf.output(dest='S').encode('latin-1', 'replace')
-st.download_button(
-    label="📄 Download PDF Report",
-    data=pdf_bytes,
-    file_name="esgine_compliance_report.pdf",
-    mime="application/pdf"
-)
 
         except Exception as e:
             st.error(f"🚨 Error during compliance check: {str(e)}")
