@@ -195,43 +195,42 @@ elif section == "Upload Report":
             )
 
             # Download PDF
-            from fpdf import FPDF
-            class PDF(FPDF):
-                def header(self):
-                    self.set_font('Arial', 'B', 14)
-                    self.cell(0, 10, 'ESGine™ Compliance Report', 0, 1, 'C')
+from fpdf import FPDF
 
-                def footer(self):
-                    self.set_y(-15)
-                    self.set_font('Arial', 'I', 8)
-                    self.cell(0, 10, f'Page {self.page_no()}', 0, 0, 'C')
+class PDF(FPDF):
+    def header(self):
+        self.set_font('Arial', 'B', 14)
+        self.cell(0, 10, 'ESGine™ Compliance Report', 0, 1, 'C')
 
-                pdf = PDF()
-                pdf.add_page()
-                pdf.set_font("Arial", size=12)
-                
-                # Header Section
-                pdf.multi_cell(0, 10, f"Selected Rule Set: {selected_rule}")
-                pdf.multi_cell(0, 10, f"Compliance Score: {result['score']}%")
-                pdf.multi_cell(0, 10, f"Passed Checks: {result['passed']} | Failed Checks: {result['failed']}")
-                pdf.ln()
-                
-                # Rule Breakdown Section
-                pdf.set_font("Arial", "B", 12)
-                pdf.cell(0, 10, "Rule-by-Rule Breakdown:", ln=True)
-                pdf.set_font("Arial", "", 11)
-                
-                for rule in result["rules"]:
-                    description = rule.get("description", "No description provided.")
-                    status = "PASSED" if rule.get("status") else "FAILED"
-                    pdf.multi_cell(0, 10, f"- {description} → {status}")
+    def footer(self):
+        self.set_y(-15)
+        self.set_font('Arial', 'I', 8)
+        self.cell(0, 10, f'Page {self.page_no()}', 0, 0, 'C')
 
-            st.download_button(
-                label="📄 Download PDF Report",
-                data=pdf.output(dest='S').encode('latin-1'),
-                file_name="esgine_compliance_report.pdf",
-                mime="application/pdf"
-            )
+# ✅ This part should be OUTSIDE the class
+pdf = PDF()
+pdf.add_page()
+pdf.set_font("Arial", size=12)
+pdf.multi_cell(0, 10, f"Selected Rule: {selected_rule}")
+pdf.multi_cell(0, 10, f"Score: {result['score']}%")
+pdf.multi_cell(0, 10, f"✅ Passed: {result['passed']} | ❌ Failed: {result['failed']}")
+pdf.ln()
+pdf.set_font("Arial", "B", 12)
+pdf.cell(0, 10, "Rule Breakdown:", ln=True)
+pdf.set_font("Arial", "", 11)
+for rule in result["rules"]:
+    status = "✅ PASSED" if rule["status"] else "❌ FAILED"
+    pdf.multi_cell(0, 10, f"- {rule['description']} → {status}")
+
+# Convert to bytes for download
+pdf_bytes = pdf.output(dest='S').encode('latin-1')
+st.download_button(
+    label="📄 Download PDF Report",
+    data=pdf_bytes,
+    file_name="esgine_compliance_report.pdf",
+    mime="application/pdf"
+)
+
 
         except Exception as e:
             st.error(f"🚨 Error during compliance check: {str(e)}")
