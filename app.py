@@ -205,8 +205,8 @@ elif section == "Upload Report":
                 mime="application/json"
             )
 
-        except Exception as e:
-            st.error(f"🚨 Error during compliance check: {e}")
+    except Exception as e:
+        st.error(f"🚨 Error during compliance check: {e}")
 
 
 # ⬆️ Define this somewhere above (after your PDF class)
