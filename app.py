@@ -113,12 +113,12 @@ elif section == "Upload Report":
 
     uploaded_file = st.file_uploader("Choose a file (JSON, PDF, DOCX, or TXT)", type=["json", "pdf", "docx", "txt"])
 
-    st.markdown("### \ud83c\udfe7 Select Rule Set")
+    st.markdown("### 🏛️ Select Rule Set")
     rule_options = {
-        "UK \u2013 FCA": "rules/uk-fca-esg.yaml",
-        "EU \u2013 SFDR": "rules/eu-sfdr.yaml",
-        "US \u2013 SEC": "rules/us-sec-esg.yaml",
-        "Global \u2013 ISSB (IFRS S1 & S2)": "rules/issb/ifrs-s1-s2.yaml"
+        "UK - FCA": "rules/uk-fca-esg.yaml",
+        "EU - SFDR": "rules/eu-sfdr.yaml",
+        "US - SEC": "rules/us-sec-esg.yaml",
+        "Global - ISSB (IFRS S1 & S2)": "rules/issb/ifrs-s1-s2.yaml"
     }
     selected_rule = st.selectbox("Choose regulatory framework", list(rule_options.keys()))
     rule_path = rule_options[selected_rule]
@@ -126,7 +126,7 @@ elif section == "Upload Report":
     if uploaded_file:
         try:
             file_type, _ = mimetypes.guess_type(uploaded_file.name)
-            st.success(f"\u2705 File uploaded: `{uploaded_file.name}`")
+            st.success(f"✅ File uploaded: `{uploaded_file.name}`")
 
             report_data = {}
             extracted_text = ""
@@ -138,14 +138,14 @@ elif section == "Upload Report":
             elif file_type == "application/pdf":
                 reader = PdfReader(uploaded_file)
                 extracted_text = "\n".join(page.extract_text() for page in reader.pages if page.extract_text())
-                st.text_area("\ud83d\udcc4 Extracted PDF Text", extracted_text, height=300)
+                st.text_area("📄 Extracted PDF Text", extracted_text, height=300)
             elif file_type == "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
                 doc = docx.Document(uploaded_file)
                 extracted_text = "\n".join([p.text for p in doc.paragraphs])
-                st.text_area("\ud83d\udcc4 Extracted DOCX Text", extracted_text, height=300)
+                st.text_area("📄 Extracted DOCX Text", extracted_text, height=300)
             elif file_type == "text/plain":
                 extracted_text = uploaded_file.read().decode("utf-8")
-                st.text_area("\ud83d\udcc4 Text File Content", extracted_text, height=300)
+                st.text_area("📄 Text File Content", extracted_text, height=300)
 
             with open(rule_path, "r") as f:
                 rules = yaml.safe_load(f)
@@ -153,22 +153,22 @@ elif section == "Upload Report":
             input_payload = report_data if file_type == "application/json" else {"report_text": extracted_text}
             result = run_rule_engine(input_payload, rules)
 
-            st.success("\u2705 ESG compliance analysis completed.")
-            st.markdown("### \ud83d\udcca Compliance Results")
+            st.success("✅ ESG compliance analysis completed.")
+            st.markdown("### 📊 Compliance Results")
             st.json(result)
 
-            st.markdown("### \ud83d\udccb Rule-by-Rule Breakdown")
+            st.markdown("### 📋 Rule-by-Rule Breakdown")
             df_rules = pd.DataFrame(result["rules"])
             st.dataframe(df_rules)
 
             if result["score"] < 50:
-                st.error("\ud83d\udea8 Score below 50% \u2014 urgent compliance gaps.")
+                st.error("🚨 Score below 50% \u2014 urgent compliance gaps.")
             elif result["score"] < 75:
-                st.warning("\u26a0\ufe0f Score between 50\u201375% \u2014 room for improvement.")
+                st.warning("⚠️ Score between 50\u201375% \u2014 room for improvement.")
             else:
-                st.success("\u2705 Strong compliance! Keep it up.")
+                st.success("✅ Strong compliance! Keep it up.")
 
-            st.markdown("### \ud83d\udcc8 Visual Summary")
+            st.markdown("### 📈 Visual Summary")
             labels = ['Passed', 'Failed']
             sizes = [result["passed"], result["failed"]]
             fig, ax = plt.subplots()
@@ -176,8 +176,8 @@ elif section == "Upload Report":
             ax.axis('equal')
             st.pyplot(fig)
 
-            st.markdown("### \ud83d\udcc5 Download Your Results")
-            st.download_button("\ud83d\udce6 Download JSON Result", data=json.dumps(result, indent=2),
+            st.markdown("### 📥 Download Your Results")
+            st.download_button("📦 Download JSON Result", data=json.dumps(result, indent=2),
                                file_name="esgine_compliance_result.json", mime="application/json")
 
             def generate_pdf_report(selected_rule, result):
@@ -192,17 +192,17 @@ elif section == "Upload Report":
                 pdf.cell(0, 10, "Rule Breakdown:", ln=True)
                 pdf.set_font("Arial", "", 11)
                 for rule in result["rules"]:
-                    status = "\u2705 PASSED" if rule["status"] else "\u274c FAILED"
+                    status = "✅ PASSED" if rule["status"] else "❌ FAILED"
                     description = rule.get("description", "No description")
-                    pdf.multi_cell(0, 10, f"- {description} \u2192 {status}")
+                    pdf.multi_cell(0, 10, f"- {description} → {status}")
                 return pdf.output(dest='S').encode('latin-1', 'replace')
 
             pdf_bytes = generate_pdf_report(selected_rule, result)
-            st.download_button("\ud83d\udcc4 Download ESGine\u2122 PDF Report", data=pdf_bytes,
+            st.download_button("📄 Download ESGine™ PDF Report", data=pdf_bytes,
                                file_name="esgine_compliance_report.pdf", mime="application/pdf")
 
         except Exception as e:
-            st.error(f"\ud83d\udea8 Error during compliance check: {str(e)}")
+            st.error(f"🚨 Error during compliance check: {str(e)}")
 
             
     def show_footer():
