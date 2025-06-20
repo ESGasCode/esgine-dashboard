@@ -136,77 +136,78 @@ elif section == "Upload Report":
         report_data = {}
         extracted_text = ""
 
-        try:
-            if file_type == "application/json":
-                raw = uploaded_file.read().decode("utf-8")
-                report_data = json.loads(raw)
-                st.json(report_data)
+try:
+    if file_type == "application/json":
+        raw = uploaded_file.read().decode("utf-8")
+        report_data = json.loads(raw)
+        st.json(report_data)
 
-            elif file_type == "application/pdf":
-                from PyPDF2 import PdfReader
-                reader = PdfReader(uploaded_file)
-                extracted_text = "\n".join(page.extract_text() for page in reader.pages if page.extract_text())
-                st.text_area("📄 Extracted PDF Text", extracted_text, height=300)
+    elif file_type == "application/pdf":
+        from PyPDF2 import PdfReader
+        reader = PdfReader(uploaded_file)
+        extracted_text = "\n".join(page.extract_text() for page in reader.pages if page.extract_text())
+        st.text_area("📄 Extracted PDF Text", extracted_text, height=300)
 
-            elif file_type == "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
-                import docx
-                doc = docx.Document(uploaded_file)
-                extracted_text = "\n".join([p.text for p in doc.paragraphs])
-                st.text_area("📄 Extracted DOCX Text", extracted_text, height=300)
+    elif file_type == "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
+        import docx
+        doc = docx.Document(uploaded_file)
+        extracted_text = "\n".join([p.text for p in doc.paragraphs])
+        st.text_area("📄 Extracted DOCX Text", extracted_text, height=300)
 
-            elif file_type == "text/plain":
-                extracted_text = uploaded_file.read().decode("utf-8")
-                st.text_area("📄 Text File Content", extracted_text, height=300)
+    elif file_type == "text/plain":
+        extracted_text = uploaded_file.read().decode("utf-8")
+        st.text_area("📄 Text File Content", extracted_text, height=300)
 
-            # Load Rules
-            with open(rule_path, "r") as f:
-                rules = yaml.safe_load(f)
+    # Load Rules
+    with open(rule_path, "r") as f:
+        rules = yaml.safe_load(f)
 
-            if file_type == "application/json":
-                input_payload = report_data
-            else:
-                input_payload = {"report_text": extracted_text}
+    if file_type == "application/json":
+        input_payload = report_data
+    else:
+        input_payload = {"report_text": extracted_text}
 
-            # Run Rule Engine
-            result = run_rule_engine(input_payload, rules)
-            st.success("✅ ESG compliance analysis completed.")
-            st.markdown("### 📊 Compliance Results")
-            st.json(result)
+    # Run Rule Engine
+    result = run_rule_engine(input_payload, rules)
+    st.success("✅ ESG compliance analysis completed.")
+    st.markdown("### 📊 Compliance Results")
+    st.json(result)
 
-            # Rule Breakdown
-            st.markdown("### 📋 Rule-by-Rule Breakdown")
-            df_rules = pd.DataFrame(result["rules"])
-            st.dataframe(df_rules)
+    # Rule Breakdown
+    st.markdown("### 📋 Rule-by-Rule Breakdown")
+    df_rules = pd.DataFrame(result["rules"])
+    st.dataframe(df_rules)
 
-            # Alerts
-            if result["score"] < 50:
-                st.error("🚨 Score below 50% — urgent compliance gaps.")
-            elif result["score"] < 75:
-                st.warning("⚠️ Score between 50–75% — room for improvement.")
-            else:
-                st.success("✅ Strong compliance! Keep it up.")
+    # Alerts
+    if result["score"] < 50:
+        st.error("🚨 Score below 50% — urgent compliance gaps.")
+    elif result["score"] < 75:
+        st.warning("⚠️ Score between 50–75% — room for improvement.")
+    else:
+        st.success("✅ Strong compliance! Keep it up.")
 
-            # Visual Summary
-            import matplotlib.pyplot as plt
-            st.markdown("### 📈 Visual Summary")
-            labels = ['Passed', 'Failed']
-            sizes = [result["passed"], result["failed"]]
-            fig, ax = plt.subplots()
-            ax.pie(sizes, labels=labels, autopct='%1.1f%%', startangle=90, colors=['#2ecc71', '#e74c3c'])
-            ax.axis('equal')
-            st.pyplot(fig)
+    # Visual Summary
+    import matplotlib.pyplot as plt
+    st.markdown("### 📈 Visual Summary")
+    labels = ['Passed', 'Failed']
+    sizes = [result["passed"], result["failed"]]
+    fig, ax = plt.subplots()
+    ax.pie(sizes, labels=labels, autopct='%1.1f%%', startangle=90, colors=['#2ecc71', '#e74c3c'])
+    ax.axis('equal')
+    st.pyplot(fig)
 
-            # Download JSON
-            st.markdown("### 📥 Download Your Results")
-            st.download_button(
-                label="📦 Download JSON Result",
-                data=json.dumps(result, indent=2),
-                file_name="esgine_compliance_result.json",
-                mime="application/json"
-            )
+    # Download JSON
+    st.markdown("### 📥 Download Your Results")
+    st.download_button(
+        label="📦 Download JSON Result",
+        data=json.dumps(result, indent=2),
+        file_name="esgine_compliance_result.json",
+        mime="application/json"
+    )
 
-    except Exception as e:
-        st.error(f"🚨 Error during compliance check: {e}")
+except Exception as e:
+    st.error(f"🚨 Error during compliance check: {e}")
+
 
 
 # ⬆️ Define this somewhere above (after your PDF class)
