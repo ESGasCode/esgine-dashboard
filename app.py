@@ -226,10 +226,6 @@ elif section == "Upload Report":
                     mime="application/pdf"
                 )
 
-            
-            pdf_bytes = generate_pdf_report(selected_rule, result)
-            st.download_button("📄 Download ESGine™ PDF Report", data=pdf_bytes,
-                               file_name="esgine_compliance_report.pdf", mime="application/pdf")
 
         except Exception as e:
             st.error(f"🚨 Error during compliance check: {str(e)}")
