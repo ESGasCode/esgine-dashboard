@@ -1,42 +1,43 @@
 import yaml
 import json
 
-def validate(report, rules):
+def validate(data, rules):
     results = []
     passed = 0
     failed = 0
 
-    is_structured = isinstance(report, dict) and "report_text" not in report
+    # If input is text (PDF/DOCX), wrap it in a dict with 'report_text' key
+    if isinstance(data, str):
+        data = {"report_text": data}
 
     for rule in rules:
         keyword = rule.get("keyword", "").lower()
         must_exist = rule.get("must_exist", False)
-        description = rule.get("description", "")
-        status = False
+        description = rule.get("description", "No description provided")
 
-        if is_structured:
-            status = any(keyword in str(value).lower() for value in report.values())
+        # Check if we're dealing with structured data (JSON) or raw text
+        if "report_text" in data:
+            report_text = data["report_text"].lower()
+            exists = keyword in report_text
         else:
-            # Here, handle text safely
-            text = report["report_text"].lower() if isinstance(report, dict) else report.lower()
-            status = keyword in text
+            exists = keyword in json.dumps(data).lower()
 
-        compliant = status == must_exist
+        compliant = must_exist == exists
         if compliant:
             passed += 1
         else:
             failed += 1
 
         results.append({
-            "keyword": keyword,
-            "must_exist": must_exist,
-            "compliant": compliant,
+            "rule_id": rule.get("rule_id", "N/A"),
             "description": description,
+            "must_exist": must_exist,
+            "exists": exists,
+            "compliant": compliant,
             "status": compliant
         })
 
     score = round((passed / (passed + failed)) * 100, 2) if (passed + failed) > 0 else 0
-
     return {
         "score": score,
         "passed": passed,
@@ -44,6 +45,5 @@ def validate(report, rules):
         "rules": results
     }
 
-# 🔁 Called by Streamlit dashboard
 def run_rule_engine(data, rules):
     return validate(data, rules)
