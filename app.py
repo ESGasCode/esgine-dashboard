@@ -242,8 +242,8 @@ if result:  # Ensure results exist before generating the PDF
     )
 
 
-except Exception as e:
-    st.error(f"🚨 Error during compliance check: {str(e)}")
+    except Exception as e:
+        st.error(f"🚨 Error during compliance check: {str(e)}")
             
     def show_footer():
         current_year = datetime.now().year
