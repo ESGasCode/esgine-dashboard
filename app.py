@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 import os
 import sys
 import mimetypes
+import pandas as pd
 from PIL import Image
 from fpdf import FPDF
 
@@ -186,7 +187,7 @@ elif section == "Upload Report":
                 pdf.set_font("Arial", size=12)
                 pdf.multi_cell(0, 10, f"Selected Rule: {selected_rule}")
                 pdf.multi_cell(0, 10, f"Score: {result['score']}%")
-                pdf.multi_cell(0, 10, f"\u2705 Passed: {result['passed']} | \u274c Failed: {result['failed']}")
+                pdf.multi_cell(0, 10, f"✅ Passed: {result['passed']} | ❌ Failed: {result['failed']}")
                 pdf.ln()
                 pdf.set_font("Arial", "B", 12)
                 pdf.cell(0, 10, "Rule Breakdown:", ln=True)
@@ -197,6 +198,35 @@ elif section == "Upload Report":
                     pdf.multi_cell(0, 10, f"- {description} → {status}")
                 return pdf.output(dest='S').encode('latin-1', 'replace')
 
+                # Visual Summary
+                import matplotlib.pyplot as plt
+                st.markdown("### 📈 Visual Summary")
+                labels = ['Passed', 'Failed']
+                sizes = [result["passed"], result["failed"]]
+                fig, ax = plt.subplots()
+                ax.pie(sizes, labels=labels, autopct='%1.1f%%', startangle=90, colors=['#2ecc71', '#e74c3c'])
+                ax.axis('equal')
+                st.pyplot(fig)
+                
+                # Download JSON
+                st.markdown("### 📥 Download Your Results")
+                st.download_button(
+                    label="📦 Download JSON Result",
+                    data=json.dumps(result, indent=2),
+                    file_name="esgine_compliance_result.json",
+                    mime="application/json"
+                )
+                
+                # Download PDF
+                pdf_bytes = generate_pdf_report(selected_rule, result)
+                st.download_button(
+                    label="📄 Download ESGine™ PDF Report",
+                    data=pdf_bytes,
+                    file_name="esgine_compliance_report.pdf",
+                    mime="application/pdf"
+                )
+
+            
             pdf_bytes = generate_pdf_report(selected_rule, result)
             st.download_button("📄 Download ESGine™ PDF Report", data=pdf_bytes,
                                file_name="esgine_compliance_report.pdf", mime="application/pdf")
