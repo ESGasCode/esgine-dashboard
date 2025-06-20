@@ -205,7 +205,8 @@ elif section == "Upload Report":
                 mime="application/json"
             )
 
-if result:  # Ensure results exist before generating the PDF
+# ⬆️ Define this somewhere above (after your PDF class)
+def generate_pdf_report(selected_rule, result):
     pdf = PDF()
     pdf.add_page()
     pdf.set_font("Arial", size=12)
@@ -222,8 +223,12 @@ if result:  # Ensure results exist before generating the PDF
         description = rule.get("description", "No description")
         pdf.multi_cell(0, 10, f"- {description} → {status}")
 
-    # Encode and provide download
-    pdf_bytes = pdf.output(dest='S').encode('latin-1', 'replace')
+    return pdf.output(dest='S').encode('latin-1', 'replace')
+
+
+if result:  # Ensure results exist before generating the PDF
+    pdf_bytes = generate_pdf_report(selected_rule, result)
+
     st.download_button(
         label="📄 Download ESGine™ PDF Report",
         data=pdf_bytes,
