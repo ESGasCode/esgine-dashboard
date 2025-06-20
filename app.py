@@ -194,20 +194,20 @@ elif section == "Upload Report":
                 mime="application/json"
             )
 
-            # Download PDF
+# Download PDF
 from fpdf import FPDF
 
 class PDF(FPDF):
     def header(self):
         self.set_font('Arial', 'B', 14)
-        self.cell(0, 10, 'ESGine™ Compliance Report', 0, 1, 'C')
+        self.cell(0, 10, 'ESGine Compliance Report', 0, 1, 'C')
 
     def footer(self):
         self.set_y(-15)
         self.set_font('Arial', 'I', 8)
         self.cell(0, 10, f'Page {self.page_no()}', 0, 0, 'C')
 
-# ✅ This part should be OUTSIDE the class
+# ✅ Now instantiate and use it
 pdf = PDF()
 pdf.add_page()
 pdf.set_font("Arial", size=12)
@@ -218,19 +218,19 @@ pdf.ln()
 pdf.set_font("Arial", "B", 12)
 pdf.cell(0, 10, "Rule Breakdown:", ln=True)
 pdf.set_font("Arial", "", 11)
+
 for rule in result["rules"]:
-    status = "✅ PASSED" if rule["status"] else "❌ FAILED"
+    status = "PASSED ✅" if rule["status"] else "FAILED ❌"
     pdf.multi_cell(0, 10, f"- {rule['description']} → {status}")
 
-# Convert to bytes for download
-pdf_bytes = pdf.output(dest='S').encode('latin-1')
+# Encode and trigger download
+pdf_bytes = pdf.output(dest='S').encode('latin-1', 'replace')
 st.download_button(
     label="📄 Download PDF Report",
     data=pdf_bytes,
     file_name="esgine_compliance_report.pdf",
     mime="application/pdf"
 )
-
 
         except Exception as e:
             st.error(f"🚨 Error during compliance check: {str(e)}")
