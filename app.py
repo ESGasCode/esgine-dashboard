@@ -109,7 +109,7 @@ if section == "Home":
 
 # Upload Section
 elif section == "Upload Report":
-    st.subheader("\ud83d\udcc4 Upload Your ESG Report")
+    st.subheader("📤 Upload Your ESG Report")
 
     uploaded_file = st.file_uploader("Choose a file (JSON, PDF, DOCX, or TXT)", type=["json", "pdf", "docx", "txt"])
 
