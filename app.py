@@ -17,7 +17,6 @@ import docx2txt
 from PyPDF2 import PdfReader 
 
 # --- Local Modules ---
-from parser.load_rule import load_rule
 from parser.rule_engine import run_rule_engine
 
 class PDF(FPDF):
@@ -149,16 +148,17 @@ elif section == "Upload Report":
             st.json(report_data)
 
         elif file_type == "application/pdf":
-            try:
-                print("💡 PdfReader is available and starting to process the PDF...")
-                reader = PdfReader(uploaded_file)
-                extracted_text = "\n".join(
-                    page.extract_text() for page in reader.pages if page.extract_text()
-                )
-                st.text_area("📄 Extracted PDF Text", extracted_text, height=300)
-            except Exception as e:
-                st.error(f"🚨 PDF processing failed: {str(e)}")
-                print("❌ Error using PdfReader:", e)
+    try:
+        from PyPDF2 import PdfReader  # 👈 Add this here
+        print("💡 PdfReader is available and starting to process the PDF...")
+        reader = PdfReader(uploaded_file)
+        extracted_text = "\n".join(
+            page.extract_text() for page in reader.pages if page.extract_text()
+        )
+        st.text_area("📄 Extracted PDF Text", extracted_text, height=300)
+    except Exception as e:
+        st.error(f"🚨 PDF processing failed: {str(e)}")
+        print("❌ Error using PdfReader:", e)
 
         elif file_type == "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
             try:
