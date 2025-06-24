@@ -1,7 +1,6 @@
 # --- Standard Library ---
 import os
 import sys
-import docx
 import json
 import base64
 import mimetypes
@@ -15,7 +14,7 @@ from fpdf import FPDF
 from PIL import Image
 import yaml
 import docx2txt
-from PyPDF2 import PdfReader
+from PyPDF2 import PdfReader  # ✅ this is the correct import
 
 # --- Local Modules ---
 from parser.load_rule import load_rule
@@ -146,7 +145,9 @@ elif section == "Upload Report":
                 st.json(report_data)
             elif file_type == "application/pdf":
                 reader = PdfReader(uploaded_file)
-                extracted_text = "\n".join(page.extract_text() for page in reader.pages if page.extract_text())
+                extracted_text = "\n".join(
+                    page.extract_text() for page in reader.pages if page.extract_text()
+                )
                 st.text_area("📄 Extracted PDF Text", extracted_text, height=300)
             elif file_type == "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
                 doc = docx.Document(uploaded_file)
