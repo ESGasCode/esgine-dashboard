@@ -132,6 +132,7 @@ elif section == "Upload Report":
     rule_path = rule_options[selected_rule]
 
     if uploaded_file:
+
         try:
             file_type, _ = mimetypes.guess_type(uploaded_file.name)
             st.success(f"✅ File uploaded: `{uploaded_file.name}`")
@@ -143,22 +144,29 @@ elif section == "Upload Report":
                 raw = uploaded_file.read().decode("utf-8")
                 report_data = json.loads(raw)
                 st.json(report_data)
+
             elif file_type == "application/pdf":
-                print("💡 PdfReader is available and about to be used")
-                reader = PdfReader(uploaded_file)
-                extracted_text = "\n".join(
+                try:
+                    print("💡 PdfReader is available and starting to process the PDF...")
+                    reader = PdfReader(uploaded_file)
+                    extracted_text = "\n".join(
                     page.extract_text() for page in reader.pages if page.extract_text()
-                )
-                st.text_area("📄 Extracted PDF Text", extracted_text, height=300)
+                    )
+                    st.text_area("📄 Extracted PDF Text", extracted_text, height=300)
+                except Exception as e:
+                    st.error(f"🚨 PDF processing failed: {str(e)}")
+                    print("❌ Error using PdfReader:", e)
+
             elif file_type == "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
                 doc = docx.Document(uploaded_file)
                 extracted_text = "\n".join([p.text for p in doc.paragraphs])
                 st.text_area("📄 Extracted DOCX Text", extracted_text, height=300)
+
             elif file_type == "text/plain":
                 extracted_text = uploaded_file.read().decode("utf-8")
                 st.text_area("📄 Text File Content", extracted_text, height=300)
 
-            from parser.load_rule import load_rule  # Place at the top of your file if not already imported
+            from parser.load_rule import load_rule  # Optional: already placed at top
             rules = load_rule(selected_rule)
             
             input_payload = report_data if file_type == "application/json" else {"report_text": extracted_text}
