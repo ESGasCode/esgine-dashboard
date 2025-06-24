@@ -1,5 +1,4 @@
 # --- Standard Library ---
-from PyPDF2 import PdfReader
 import os
 import sys
 import docx
@@ -16,6 +15,7 @@ from fpdf import FPDF
 from PIL import Image
 import yaml
 import docx2txt
+from PyPDF2 import PdfReader
 
 # --- Local Modules ---
 from parser.load_rule import load_rule
