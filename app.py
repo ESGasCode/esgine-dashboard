@@ -116,20 +116,20 @@ if section == "Home":
     
         # Upload Section
         elif section == "Upload Report":
-        st.subheader("📤 Upload Your ESG Report")
+            st.subheader("📤 Upload Your ESG Report")
     
-        uploaded_file = st.file_uploader("Choose a file (JSON, PDF, DOCX, or TXT)", type=["json", "pdf", "docx", "txt"])
+            uploaded_file = st.file_uploader("Choose a file (JSON, PDF, DOCX, or TXT)", type=["json", "pdf", "docx", "txt"])
     
-        st.markdown("### 🏛️ Select Rule Set")
-        rule_options = {
-        "UK - FCA": "rules/uk-fca-esg.yaml",
-        "EU - SFDR": "rules/eu-sfdr.yaml",
-        "US - SEC": "rules/sec/sec-esg.yaml",  # ✅ Point to your correct path
-        "Global - ISSB (IFRS S1 & S2)": "rules/issb/ifrs-s1-s2.yaml"
-        }
+            st.markdown("### 🏛️ Select Rule Set")
+            rule_options = {
+            "UK - FCA": "rules/uk-fca-esg.yaml",
+            "EU - SFDR": "rules/eu-sfdr.yaml",
+            "US - SEC": "rules/sec/sec-esg.yaml",  # ✅ Point to your correct path
+            "Global - ISSB (IFRS S1 & S2)": "rules/issb/ifrs-s1-s2.yaml"
+            }
         
-        selected_rule = st.selectbox("Choose regulatory framework", list(rule_options.keys()))
-        rule_path = rule_options[selected_rule]
+            selected_rule = st.selectbox("Choose regulatory framework", list(rule_options.keys()))
+            rule_path = rule_options[selected_rule]
     
         
         if uploaded_file:
