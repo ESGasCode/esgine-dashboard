@@ -113,52 +113,52 @@ if section == "Home":
     # This ensures footer is always displayed
     show_footer()
 
-
-# Upload Section
-elif section == "Upload Report":
-    st.subheader("📤 Upload Your ESG Report")
-
-    uploaded_file = st.file_uploader("Choose a file (JSON, PDF, DOCX, or TXT)", type=["json", "pdf", "docx", "txt"])
-
-    st.markdown("### 🏛️ Select Rule Set")
-    rule_options = {
-    "UK - FCA": "rules/uk-fca-esg.yaml",
-    "EU - SFDR": "rules/eu-sfdr.yaml",
-    "US - SEC": "rules/sec/sec-esg.yaml",  # ✅ Point to your correct path
-    "Global - ISSB (IFRS S1 & S2)": "rules/issb/ifrs-s1-s2.yaml"
-    }
     
-    selected_rule = st.selectbox("Choose regulatory framework", list(rule_options.keys()))
-    rule_path = rule_options[selected_rule]
-
+    # Upload Section
+    elif section == "Upload Report":
+        st.subheader("📤 Upload Your ESG Report")
     
-    if uploaded_file:
+        uploaded_file = st.file_uploader("Choose a file (JSON, PDF, DOCX, or TXT)", type=["json", "pdf", "docx", "txt"])
+    
+        st.markdown("### 🏛️ Select Rule Set")
+        rule_options = {
+        "UK - FCA": "rules/uk-fca-esg.yaml",
+        "EU - SFDR": "rules/eu-sfdr.yaml",
+        "US - SEC": "rules/sec/sec-esg.yaml",  # ✅ Point to your correct path
+        "Global - ISSB (IFRS S1 & S2)": "rules/issb/ifrs-s1-s2.yaml"
+        }
+        
+        selected_rule = st.selectbox("Choose regulatory framework", list(rule_options.keys()))
+        rule_path = rule_options[selected_rule]
+    
+        
+        if uploaded_file:
+    
+        try:
+            file_type, _ = mimetypes.guess_type(uploaded_file.name)
+            st.success(f"✅ File uploaded: `{uploaded_file.name}`")
+    
+            report_data = {}
+            extracted_text = ""
+    
+            # --- Handle file parsing ---
+            if file_type == "application/json":
+                raw = uploaded_file.read().decode("utf-8")
+                report_data = json.loads(raw)
+                st.json(report_data)
 
-    try:
-        file_type, _ = mimetypes.guess_type(uploaded_file.name)
-        st.success(f"✅ File uploaded: `{uploaded_file.name}`")
+     elif file_type == "application/pdf":
+        try:
+            print("💡 PdfReader is available and starting to process the PDF...")
+            reader = PdfReader(uploaded_file)
+            extracted_text = "\n".join(
+                page.extract_text() for page in reader.pages if page.extract_text()
+            )
+            st.text_area("📄 Extracted PDF Text", extracted_text, height=300)
+        except Exception as e:
+            st.error(f"🚨 PDF processing failed: {str(e)}")
+            print("❌ Error using PdfReader:", e)
 
-        report_data = {}
-        extracted_text = ""
-
-        # --- Handle file parsing ---
-        if file_type == "application/json":
-            raw = uploaded_file.read().decode("utf-8")
-            report_data = json.loads(raw)
-            st.json(report_data)
-
-        elif file_type == "application/pdf":
-    try:
-        from PyPDF2 import PdfReader  # 👈 Add this here
-        print("💡 PdfReader is available and starting to process the PDF...")
-        reader = PdfReader(uploaded_file)
-        extracted_text = "\n".join(
-            page.extract_text() for page in reader.pages if page.extract_text()
-        )
-        st.text_area("📄 Extracted PDF Text", extracted_text, height=300)
-    except Exception as e:
-        st.error(f"🚨 PDF processing failed: {str(e)}")
-        print("❌ Error using PdfReader:", e)
 
         elif file_type == "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
             try:
