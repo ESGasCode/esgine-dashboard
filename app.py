@@ -13,6 +13,7 @@ import matplotlib.pyplot as plt
 from fpdf import FPDF
 from PIL import Image
 import yaml
+import docx  # from python-docx, NOT docx2txt
 import docx2txt
 from PyPDF2 import PdfReader 
 
@@ -148,47 +149,49 @@ if file_type == "application/json":
     st.json(report_data)
 
 elif file_type == "application/pdf":
-try:
-    print("💡 PdfReader is available and starting to process the PDF...")
-    reader = PdfReader(uploaded_file)
-    extracted_text = "\n".join(
-    page.extract_text() for page in reader.pages if page.extract_text()
-    )
-    st.text_area("📄 Extracted PDF Text", extracted_text, height=300)
+    try:
+        print("💡 PdfReader is available and starting to process the PDF...")
+        reader = PdfReader(uploaded_file)
+        extracted_text = "\n".join(
+        page.extract_text() for page in reader.pages if page.extract_text()
+        )
+        st.text_area("📄 Extracted PDF Text", extracted_text, height=300)
     except Exception as e:
-    st.error(f"🚨 PDF processing failed: {str(e)}")
-    print("❌ Error using PdfReader:", e)
+        st.error(f"🚨 PDF processing failed: {str(e)}")
+        print("❌ Error using PdfReader:", e)
 
 elif file_type == "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
-try:
-    import docx
-    doc = docx.Document(uploaded_file)
-    extracted_text = "\n".join([p.text for p in doc.paragraphs])
-    st.text_area("📄 Extracted DOCX Text", extracted_text, height=300)
-except Exception as e:
-    st.error(f"🚨 DOCX processing failed: {str(e)}")
+    try:
+        import docx  # Make sure python-docx is installed
+        doc = docx.Document(uploaded_file)
+        extracted_text = "\n".join([p.text for p in doc.paragraphs])
+        st.text_area("📄 Extracted DOCX Text", extracted_text, height=300)
+    except Exception as e:
+        st.error(f"🚨 DOCX processing failed: {str(e)}")
+        print("❌ Error using python-docx:", e)
+
 
 elif file_type == "text/plain":
     extracted_text = uploaded_file.read().decode("utf-8")
     st.text_area("📄 Text File Content", extracted_text, height=300)
 
 # --- Run compliance check ---
-try:
-    rules = load_rule(selected_rule)
-    input_payload = report_data if file_type == "application/json" else extracted_text
-    result = run_rule_engine(input_payload, rules)
+    try:
+        rules = load_rule(selected_rule)
+        input_payload = report_data if file_type == "application/json" else extracted_text
+        result = run_rule_engine(input_payload, rules)
 
-    st.success("✅ ESG compliance analysis completed.")
-    st.markdown("### 📊 Compliance Results")
-    st.metric(label="Compliance Score", value=f"{result['score']}%")
-    st.json(result)
-
-    st.markdown("### 📋 Rule-by-Rule Breakdown")
-    df_rules = pd.DataFrame(result["rules"])
-    st.dataframe(df_rules)
-
-    if result["score"] < 50:
-    st.error("🚨 Score below 50% — urgent compliance gaps.")
+        st.success("✅ ESG compliance analysis completed.")
+        st.markdown("### 📊 Compliance Results")
+        st.metric(label="Compliance Score", value=f"{result['score']}%")
+        st.json(result)
+    
+        st.markdown("### 📋 Rule-by-Rule Breakdown")
+        df_rules = pd.DataFrame(result["rules"])
+        st.dataframe(df_rules)
+    
+        if result["score"] < 50:
+        st.error("🚨 Score below 50% — urgent compliance gaps.")
 elif result["score"] < 75:
     st.warning("⚠️ Score between 50–75% — room for improvement.")
     else:
