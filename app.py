@@ -1,17 +1,22 @@
-import streamlit as st
-from datetime import datetime
-import base64
-import json
-import yaml
-import docx2txt
-import matplotlib.pyplot as plt
+# --- Standard Library ---
 import os
 import sys
+import json
+import base64
 import mimetypes
+from datetime import datetime
+
+# --- Third-Party Libraries ---
+import streamlit as st
 import pandas as pd
-from PIL import Image
+import matplotlib.pyplot as plt
 from fpdf import FPDF
+from PIL import Image
+import yaml
+import docx2txt
 from PyPDF2 import PdfReader
+
+# --- Local Modules ---
 from parser.load_rule import load_rule
 
 class PDF(FPDF):
