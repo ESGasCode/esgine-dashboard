@@ -1,6 +1,9 @@
 # --- Standard Library ---
 import os
 import sys
+sys.path.append("parser")  # or "../parser" if it's one level up
+import sys
+import docx
 import json
 import base64
 import mimetypes
