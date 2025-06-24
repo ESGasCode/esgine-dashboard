@@ -110,12 +110,12 @@ if section == "Home":
             """,
             unsafe_allow_html=True
         )
-    # This ensures footer is always displayed
-    show_footer()
+        # This ensures footer is always displayed
+        show_footer()
 
     
-    # Upload Section
-    elif section == "Upload Report":
+        # Upload Section
+        elif section == "Upload Report":
         st.subheader("📤 Upload Your ESG Report")
     
         uploaded_file = st.file_uploader("Choose a file (JSON, PDF, DOCX, or TXT)", type=["json", "pdf", "docx", "txt"])
@@ -147,7 +147,7 @@ if section == "Home":
                 report_data = json.loads(raw)
                 st.json(report_data)
 
-     elif file_type == "application/pdf":
+            elif file_type == "application/pdf":
         try:
             print("💡 PdfReader is available and starting to process the PDF...")
             reader = PdfReader(uploaded_file)
@@ -159,9 +159,8 @@ if section == "Home":
             st.error(f"🚨 PDF processing failed: {str(e)}")
             print("❌ Error using PdfReader:", e)
 
-
-        elif file_type == "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
-            try:
+            elif file_type == "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
+        try:
                 import docx
                 doc = docx.Document(uploaded_file)
                 extracted_text = "\n".join([p.text for p in doc.paragraphs])
@@ -169,7 +168,7 @@ if section == "Home":
             except Exception as e:
                 st.error(f"🚨 DOCX processing failed: {str(e)}")
 
-        elif file_type == "text/plain":
+            elif file_type == "text/plain":
             extracted_text = uploaded_file.read().decode("utf-8")
             st.text_area("📄 Text File Content", extracted_text, height=300)
 
@@ -198,8 +197,8 @@ if section == "Home":
         except Exception as e:
             st.error(f"🚨 Error during compliance check: {str(e)}")
 
-    except Exception as e:
-        st.error(f"🚨 General error during file processing: {str(e)}")
+        except Exception as e:
+            st.error(f"🚨 General error during file processing: {str(e)}")
 
             st.markdown("### 📈 Visual Summary")
             labels = ['Passed', 'Failed']
