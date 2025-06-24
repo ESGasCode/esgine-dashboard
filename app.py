@@ -148,9 +148,9 @@ elif section == "Upload Report":
                 extracted_text = uploaded_file.read().decode("utf-8")
                 st.text_area("📄 Text File Content", extracted_text, height=300)
 
-            with open(rule_path, "r") as f:
-                rules = yaml.safe_load(f)
-
+            from parser.load_rule import load_rule  # Place at the top of your file if not already imported
+            rules = load_rule(selected_rule)
+            
             input_payload = report_data if file_type == "application/json" else {"report_text": extracted_text}
             result = run_rule_engine(input_payload, rules)
 
