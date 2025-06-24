@@ -12,6 +12,7 @@ import mimetypes
 import pandas as pd
 from PIL import Image
 from fpdf import FPDF
+from parser.load_rule import load_rule
 
 class PDF(FPDF):
     def header(self):
