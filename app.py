@@ -117,11 +117,12 @@ elif section == "Upload Report":
 
     st.markdown("### 🏛️ Select Rule Set")
     rule_options = {
-        "UK - FCA": "rules/uk-fca-esg.yaml",
-        "EU - SFDR": "rules/eu-sfdr.yaml",
-        "US - SEC": "rules/us-sec-esg.yaml",
-        "Global - ISSB (IFRS S1 & S2)": "rules/issb/ifrs-s1-s2.yaml"
+    "UK - FCA": "rules/uk-fca-esg.yaml",
+    "EU - SFDR": "rules/eu-sfdr.yaml",
+    "US - SEC": "rules/sec/sec-esg.yaml",  # ✅ Point to your correct path
+    "Global - ISSB (IFRS S1 & S2)": "rules/issb/ifrs-s1-s2.yaml"
     }
+    
     selected_rule = st.selectbox("Choose regulatory framework", list(rule_options.keys()))
     rule_path = rule_options[selected_rule]
 
