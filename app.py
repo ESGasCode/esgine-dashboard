@@ -14,7 +14,7 @@ from fpdf import FPDF
 from PIL import Image
 import yaml
 import docx2txt
-from PyPDF2 import PdfReader  # ✅ this is the correct import
+from PyPDF2 import PdfReader 
 
 # --- Local Modules ---
 from parser.load_rule import load_rule
