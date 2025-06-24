@@ -4,7 +4,6 @@ import base64
 import json
 import yaml
 import docx2txt
-import PyPDF2
 import matplotlib.pyplot as plt
 import os
 import sys
