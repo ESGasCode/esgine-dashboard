@@ -18,6 +18,7 @@ from PyPDF2 import PdfReader
 
 # --- Local Modules ---
 from parser.load_rule import load_rule
+from parser.rule_engine import run_rule_engine
 
 class PDF(FPDF):
     def header(self):
