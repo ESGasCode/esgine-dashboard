@@ -144,6 +144,7 @@ elif section == "Upload Report":
                 report_data = json.loads(raw)
                 st.json(report_data)
             elif file_type == "application/pdf":
+                print("💡 PdfReader is available and about to be used")
                 reader = PdfReader(uploaded_file)
                 extracted_text = "\n".join(
                     page.extract_text() for page in reader.pages if page.extract_text()
