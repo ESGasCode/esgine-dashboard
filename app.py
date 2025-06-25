@@ -6,6 +6,19 @@ st.set_page_config(
     page_icon="🌿",
     layout="wide"
 )
+st.markdown(
+    """
+    <style>
+    [data-testid="collapsedControl"] {
+        display: none;
+    }
+    section[data-testid="stSidebar"] {
+        display: block !important;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
 
 # --- Hide Streamlit Branding ---
 st.markdown("""
