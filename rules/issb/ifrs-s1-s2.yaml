@@ -2,7 +2,29 @@ id: ISSB_IFRS_S1_S2_001
 authority: ISSB
 jurisdiction: Global
 required_fields:
-  - climate_risk_disclosure
+  - sustainability_governance
+  - sustainability_risks
+  - climate_related_targets
+  - emissions_scope_1
+  - emissions_scope_2
+  - emissions_scope_3
+  - transition_plan
+  - scenario_analysis
+
 compliance_check:
-  - field: "climate_risk_disclosure"
+  - field: sustainability_governance
     must_exist: true
+  - field: sustainability_risks
+    must_contain: ["financial materiality", "risk assessment"]
+  - field: climate_related_targets
+    must_exist: true
+  - field: emissions_scope_1
+    must_exist: true
+  - field: emissions_scope_2
+    must_exist: true
+  - field: emissions_scope_3
+    must_exist: true
+  - field: transition_plan
+    must_contain: ["net zero", "decarbonisation"]
+  - field: scenario_analysis
+    must_contain: ["climate scenario", "assumptions"]
