@@ -193,8 +193,8 @@ elif section == "Upload Report":
             if input_payload:
                 with st.spinner("🔍 Running ESGine™ compliance check..."):
                     result_list = evaluate_rule(rules, input_payload)
-                    passed = sum(1 for r in result_list if "✅" in r["status"])
-                    failed = sum(1 for r in result_list if "❌" in r["status"])
+                    passed = sum(1 for r in result_list if "✅" in str(r["status"]))
+                    failed = sum(1 for r in result_list if "❌" in str(r["status"]))
                     score = round((passed / (passed + failed)) * 100, 2) if passed + failed > 0 else 0
 
                     result = {
