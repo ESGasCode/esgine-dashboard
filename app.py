@@ -229,66 +229,83 @@ elif section == "Upload Report":
                 st.warning("⚠️ Unsupported file type. Please upload JSON, PDF, DOCX, or TXT.")
                 return
 
-            # --- Run Compliance Check ---
-            rules = load_rule(rule_path)
-            input_payload = report_data if file_type == "application/json" else extracted_text
+            # --- Run Compliance Check (only for JSON) ---
+            from parser.local_evaluator import load_yaml_rule, evaluate_rule
 
-            with st.spinner("🔍 Running ESGine™ compliance check..."):
-                result = run_rule_engine(input_payload, rules)
+            rules = load_yaml_rule(rule_path)
+            input_payload = report_data if file_type == "application/json" else {}
 
-            st.success("✅ ESG compliance analysis completed.")
-            st.metric("Compliance Score", f"{result['score']}%")
-            st.markdown("### 📊 Rule Evaluation")
-            st.dataframe(pd.DataFrame(result["rules"]))
+            if input_payload:
+                with st.spinner("🔍 Running ESGine™ compliance check..."):
+                    result_list = evaluate_rule(rules, input_payload)
+                    passed = sum(1 for r in result_list if "✅" in r["status"])
+                    failed = sum(1 for r in result_list if "❌" in r["status"])
+                    score = round((passed / (passed + failed)) * 100, 2) if passed + failed > 0 else 0
 
-            # --- Score Feedback ---
-            if result["score"] < 50:
-                st.error("🚨 Score below 50% — major compliance gaps.")
-            elif result["score"] < 75:
-                st.warning("⚠️ Score between 50–75% — moderate gaps, needs work.")
+                    result = {
+                        "score": score,
+                        "passed": passed,
+                        "failed": failed,
+                        "rules": result_list
+                    }
+
+                    st.success("✅ ESG compliance analysis completed.")
+                    st.metric("Compliance Score", f"{score}%")
+                    st.markdown("### 📊 Rule Evaluation")
+                    st.dataframe(pd.DataFrame(result["rules"]))
+
+                    # --- Score Feedback ---
+                    if score < 50:
+                        st.error("🚨 Score below 50% — major compliance gaps.")
+                    elif score < 75:
+                        st.warning("⚠️ Score between 50–75% — moderate gaps, needs work.")
+                    else:
+                        st.success("✅ Score above 75% — strong ESG alignment.")
+
+                    # --- Visual Summary ---
+                    st.markdown("### 📈 Summary Chart")
+                    labels = ['Passed', 'Failed']
+                    sizes = [passed, failed]
+                    fig, ax = plt.subplots()
+                    ax.pie(sizes, labels=labels, autopct='%1.1f%%', startangle=90, colors=['#2ecc71', '#e74c3c'])
+                    ax.axis('equal')
+                    st.pyplot(fig)
+
+                    # --- Download JSON ---
+                    st.markdown("### 📥 Download Reports")
+                    st.download_button("📦 Download JSON Result", data=json.dumps(result, indent=2),
+                                       file_name="esgine_compliance_result.json", mime="application/json")
+
+                    # --- PDF Report ---
+                    def generate_pdf_report(selected_rule, result):
+                        pdf = FPDF()
+                        pdf.add_page()
+                        pdf.set_font("Arial", size=12)
+                        pdf.multi_cell(0, 10, f"Selected Rule: {selected_rule}")
+                        pdf.multi_cell(0, 10, f"Score: {result['score']}%")
+                        pdf.multi_cell(0, 10, f"✅ Passed: {result['passed']} | ❌ Failed: {result['failed']}")
+                        pdf.ln()
+                        pdf.set_font("Arial", "B", 12)
+                        pdf.cell(0, 10, "Rule Breakdown:", ln=True)
+                        pdf.set_font("Arial", "", 11)
+                        for rule in result["rules"]:
+                            status = rule["status"]
+                            field = rule.get("field", "N/A")
+                            pdf.multi_cell(0, 10, f"- {field} → {status}")
+                        return pdf.output(dest='S').encode('latin-1', 'replace')
+
+                    pdf_bytes = generate_pdf_report(selected_rule, result)
+                    st.download_button("📄 Download ESGine™ PDF Report",
+                                       data=pdf_bytes,
+                                       file_name="esgine_compliance_report.pdf",
+                                       mime="application/pdf")
+
             else:
-                st.success("✅ Score above 75% — strong ESG alignment.")
-
-            # --- Visual Summary ---
-            st.markdown("### 📈 Summary Chart")
-            labels = ['Passed', 'Failed']
-            sizes = [result["passed"], result["failed"]]
-            fig, ax = plt.subplots()
-            ax.pie(sizes, labels=labels, autopct='%1.1f%%', startangle=90, colors=['#2ecc71', '#e74c3c'])
-            ax.axis('equal')
-            st.pyplot(fig)
-
-            # --- Download Options ---
-            st.markdown("### 📥 Download Reports")
-            st.download_button("📦 Download JSON Result", data=json.dumps(result, indent=2),
-                               file_name="esgine_compliance_result.json", mime="application/json")
-
-            # PDF Export
-            def generate_pdf_report(selected_rule, result):
-                pdf = PDF()
-                pdf.add_page()
-                pdf.set_font("Arial", size=12)
-                pdf.multi_cell(0, 10, f"Selected Rule: {selected_rule}")
-                pdf.multi_cell(0, 10, f"Score: {result['score']}%")
-                pdf.multi_cell(0, 10, f"✅ Passed: {result['passed']} | ❌ Failed: {result['failed']}")
-                pdf.ln()
-                pdf.set_font("Arial", "B", 12)
-                pdf.cell(0, 10, "Rule Breakdown:", ln=True)
-                pdf.set_font("Arial", "", 11)
-                for rule in result["rules"]:
-                    status = "✅ PASSED" if rule["status"] else "❌ FAILED"
-                    desc = rule.get("description", "No description")
-                    pdf.multi_cell(0, 10, f"- {desc} → {status}")
-                return pdf.output(dest='S').encode('latin-1', 'replace')
-
-            pdf_bytes = generate_pdf_report(selected_rule, result)
-            st.download_button("📄 Download ESGine™ PDF Report",
-                               data=pdf_bytes,
-                               file_name="esgine_compliance_report.pdf",
-                               mime="application/pdf")
+                st.warning("⚠️ Compliance check currently only supports structured JSON files. DOCX/PDF text can be extracted, but automated checks will come in a later version.")
 
         except Exception as e:
             st.error(f"🚨 An unexpected error occurred: {str(e)}")
+
 
 
 # ✅ About Section
