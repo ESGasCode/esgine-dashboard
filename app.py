@@ -43,7 +43,7 @@ backend_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'es
 sys.path.insert(0, backend_path)
 
 # --- Local Modules ---
-from parser.rule_engine import run_rule_engine
+from parser.local_evaluator import load_yaml_rule, evaluate_rule
 
 # --- PDF Template for Export (Optional Future Use) ---
 class PDF(FPDF):
