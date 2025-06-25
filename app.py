@@ -1,3 +1,21 @@
+import streamlit as st
+
+# Set page metadata (title + icon + layout)
+st.set_page_config(
+    page_title="ESGine",
+    page_icon="🌍",
+    layout="wide"
+)
+
+# Hide Streamlit branding elements for a cleaner UI
+st.markdown("""
+    <style>
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    header {visibility: hidden;}
+    </style>
+""", unsafe_allow_html=True)
+
 # --- Standard Library ---
 import os
 import sys
@@ -7,13 +25,12 @@ import mimetypes
 from datetime import datetime
 
 # --- Third-Party Libraries ---
-import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 from fpdf import FPDF
 from PIL import Image
 import yaml
-import docx  # from python-docx, NOT docx2txt
+import docx 
 import docx2txt
 from PyPDF2 import PdfReader 
 
