@@ -119,16 +119,12 @@ if section == "Home":
 show_footer()
     
 # --- Upload Report Section ---
-
-
-
 elif section == "Upload Report":
     st.subheader("📤 Upload Your ESG Report")
+    # Upload input
+    uploaded_file = st.file_uploader("Choose a file (.json, .pdf, .docx, .txt)", type=["json", "pdf", "docx", "txt"])
 
-# Upload input
-uploaded_file = st.file_uploader("Choose a file (.json, .pdf, .docx, .txt)", type=["json", "pdf", "docx", "txt"])
-
-# Rule set selection
+    # Rule set selection
     st.markdown("### 🏛️ Select Compliance Framework")
     rule_options = {
         "UK - FCA": "rules/uk-fca-esg.yaml",
@@ -139,7 +135,7 @@ uploaded_file = st.file_uploader("Choose a file (.json, .pdf, .docx, .txt)", typ
     selected_rule = st.selectbox("Choose regulatory framework", list(rule_options.keys()))
     rule_path = rule_options[selected_rule]
 
-    if uploaded_file:
+if uploaded_file:
         try:
             file_type, _ = mimetypes.guess_type(uploaded_file.name)
             st.success(f"✅ File uploaded: `{uploaded_file.name}`")
