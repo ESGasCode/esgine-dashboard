@@ -228,8 +228,8 @@ elif section == "Upload Report":
 
         except Exception as e:
             st.error(f"🚨 An unexpected error occurred: {str(e)}")
-        # --- Always Show Footer ---
-        show_footer()
+            # --- Always Show Footer ---
+            show_footer()
 
 # ✅ About Section
 elif section == "About":    
