@@ -88,43 +88,48 @@ if section == "Upload Report":
         "Global - ISSB (IFRS S2 Narrative)": "rules/issb/ifrs-s2-narrative.yaml"
     }
 
-    selected_rule = st.selectbox("Choose regulatory framework", list(rule_options.keys()))
-    rule_path = rule_options[selected_rule]
+    # --- Framework Selection ---
+selected_rule = st.selectbox("Choose regulatory framework", list(rule_options.keys()))
+rule_path = rule_options[selected_rule]
 
-    if uploaded_file:
-        try:
-            file_type, _ = mimetypes.guess_type(uploaded_file.name)
-            extracted_text = ""
+# --- File Upload Handling ---
+if uploaded_file:
+    try:
+        file_type, _ = mimetypes.guess_type(uploaded_file.name)
+        extracted_text = ""
 
-            if file_type == "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
-                doc = docx.Document(uploaded_file)
-                extracted_text = "\n".join([para.text for para in doc.paragraphs])
-                st.success("✅ DOCX file parsed successfully.")
+        if file_type == "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
+            doc = docx.Document(uploaded_file)
+            extracted_text = "\n".join([para.text for para in doc.paragraphs])
+            st.success("✅ DOCX file parsed successfully.")
 
-            elif file_type == "application/pdf":
-                reader = PdfReader(uploaded_file)
-                extracted_text = "\n".join([page.extract_text() or "" for page in reader.pages])
-                st.success("✅ PDF file parsed successfully.")
+        elif file_type == "application/pdf":
+            reader = PdfReader(uploaded_file)
+            extracted_text = "\n".join([page.extract_text() or "" for page in reader.pages])
+            st.success("✅ PDF file parsed successfully.")
 
-            else:
-                st.warning("⚠️ Unsupported file type.")
+        else:
+            st.warning("⚠️ Unsupported file type.")
 
-            if extracted_text.strip():
-                st.markdown("### 📝 Extracted Report Text")
-                st.text_area("📋 Content Preview", extracted_text, height=300)
+        if extracted_text.strip():
+            st.markdown("### 📝 Extracted Report Text")
+            st.text_area("📋 Content Preview", extracted_text, height=300)
 
-                # Compliance check
-                with st.spinner("🔍 Running ESGine™ compliance check..."):
-                    rules = load_rule(rule_path)
-                    result = run_rule_engine(extracted_text, rules)
+            # ✅ COMPLIANCE CHECK
+            with st.spinner("🔍 Running ESGine™ compliance check..."):
+                rules = load_yaml_rule(rule_path)
+                result = evaluate_rule(rules, extracted_text)
 
-                st.success("✅ Compliance check complete.")
-                st.metric(label="Compliance Score", value=f"{result['score']}%")
-                st.markdown("### 📊 Rule Evaluation Summary")
-                st.json(result)
+            st.success("✅ Compliance check complete.")
+            st.metric(
+                label="Compliance Score",
+                value=f"{sum(r['status'] for r in result) * 100 // len(result)}%"
+            )
+            st.markdown("### 📊 Rule Evaluation Summary")
+            st.json(result)
 
-        except Exception as e:
-            st.error(f"🚨 An error occurred: {str(e)}")
+    except Exception as e:
+        st.error(f"🚨 An error occurred: {str(e)}")
 
 # --- Footer ---
 def show_footer():
