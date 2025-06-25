@@ -13,20 +13,22 @@ def load_json_report(filepath):
 
 def evaluate_rule(rule, report):
     results = []
+    is_text = isinstance(report, str)
+
     for check in rule.get("compliance_check", []):
-        field = check.get("field")
+        keyword = check.get("field")
         must_exist = check.get("must_exist", False)
-        value_exists = field in report
-        if must_exist and not value_exists:
-            results.append({
-                "field": field,
-                "status": "❌ MISSING"
-            })
+
+        if is_text:
+            found = keyword.lower() in report.lower()
         else:
-            results.append({
-                "field": field,
-                "status": "✅ OK"
-            })
+            found = keyword in report
+
+        results.append({
+            "field": keyword,
+            "status": "✅ OK" if found else "❌ MISSING"
+        })
+
     return results
 
 # Example usage
