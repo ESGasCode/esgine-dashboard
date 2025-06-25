@@ -128,6 +128,19 @@ elif section == "Upload Report":
             extracted_text = ""
             report_data = {}
 
+            # --- Shared helper for converting extracted text into JSON ---
+            def convert_text_to_json(text):
+                import re
+                lines = text.split("\n")
+                data = {}
+                for line in lines:
+                    match = re.match(r"^([a-zA-Z0-9_ \-]+):\s*(.*)$", line)
+                    if match:
+                        key = match.group(1).strip().lower().replace(" ", "_")
+                        value = match.group(2).strip()
+                        data[key] = value
+                return data
+            
             # --- Parse uploaded file ---
             if file_type == "application/json":
                 raw = uploaded_file.read().decode("utf-8")
@@ -151,6 +164,19 @@ elif section == "Upload Report":
             else:
                 st.warning("⚠️ Unsupported file type. Please upload JSON, PDF, DOCX, or TXT.")
                 st.stop()
+            
+            # --- Convert Extracted Text into JSON if not already loaded ---
+            if extracted_text:
+                report_data = convert_text_to_json(extracted_text)
+                
+                # ✅ Add this toggle here
+                advanced = st.checkbox("🔬 Show raw extracted text and parsed data", value=True)
+                if advanced:
+                    st.markdown("### 📄 Auto-Parsed Data (Preview)")
+                    st.json(report_data)
+                    st.text_area("📄 Extracted Text", extracted_text, height=300)
+            
+                file_type = "application/json"
 
             # --- Run Compliance Check (only for JSON) ---
             from parser.local_evaluator import load_yaml_rule, evaluate_rule
@@ -228,6 +254,7 @@ elif section == "Upload Report":
 
         except Exception as e:
             st.error(f"🚨 An unexpected error occurred: {str(e)}")
+           
             # --- Always Show Footer ---
             show_footer()
 
