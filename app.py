@@ -81,7 +81,6 @@ def show_footer():
         unsafe_allow_html=True
     )
 
-
 # --- Sidebar Navigation ---
 st.sidebar.header("Navigation")
 section = st.sidebar.radio("Go to", ["Home", "Upload Report", "About", "Contact"])
@@ -115,8 +114,8 @@ if section == "Home":
 
     """)
 
-# --- Always Show Footer ---
-show_footer()
+    # --- Always Show Footer ---
+    show_footer()
     
 # --- Upload Report Section ---
 elif section == "Upload Report":
@@ -246,6 +245,7 @@ elif section == "Upload Report":
 
     # --- Always Show Footer ---
     show_footer()
+
 # ✅ About Section
 elif section == "About":    
     st.subheader("📘 About ESGine")
@@ -258,9 +258,9 @@ elif section == "About":
 
 #### 🔁 ESGine Ecosystem Overview
     """)
-    
-# --- Always Show Footer ---
-show_footer()
+
+    # --- Always Show Footer ---
+    show_footer()
 
 # ✅ Contact Section
 elif section == "Contact":
