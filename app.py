@@ -145,22 +145,27 @@ elif section == "Upload Report":
             if file_type == "application/json":
                 raw = uploaded_file.read().decode("utf-8")
                 report_data = json.loads(raw)
-                st.json(report_data)
 
+                # Store in session_state
+                st.session_state["report_data"] = report_data
+                st.session_state["extracted_text"] = raw  # optional
+            
+                st.json(report_data)
+            
             elif file_type == "application/pdf":
                 reader = PdfReader(uploaded_file)
                 extracted_text = "\n".join(page.extract_text() or "" for page in reader.pages)
                 st.text_area("📄 Extracted PDF Text", extracted_text, height=300)
-
+            
             elif file_type == "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
                 doc = docx.Document(uploaded_file)
                 extracted_text = "\n".join([p.text for p in doc.paragraphs])
                 st.text_area("📄 Extracted DOCX Text", extracted_text, height=300)
-
+            
             elif file_type == "text/plain":
                 extracted_text = uploaded_file.read().decode("utf-8")
                 st.text_area("📄 Text File Content", extracted_text, height=300)
-
+            
             else:
                 st.warning("⚠️ Unsupported file type. Please upload JSON, PDF, DOCX, or TXT.")
                 st.stop()
@@ -168,21 +173,22 @@ elif section == "Upload Report":
             # --- Convert Extracted Text into JSON if not already loaded ---
             if extracted_text:
                 report_data = convert_text_to_json(extracted_text)
-                
-                # ✅ Add this toggle here
-                advanced = st.checkbox("🔬 Show raw extracted text and parsed data", value=True)
-                if advanced:
-                    st.markdown("### 📄 Auto-Parsed Data (Preview)")
-                    st.json(report_data)
-                    st.text_area("📄 Extracted Text", extracted_text, height=300)
+                st.markdown("### 📄 Auto-Parsed Data (Preview)")
+                st.json(report_data)
             
-                file_type = "application/json"
+                # ✅ Ensure valid JSON structure before proceeding
+                if isinstance(report_data, dict):
+                    file_type = "application/json"
+                else:
+                    st.warning("⚠️ Failed to parse extracted text into valid JSON-like structure.")
+                    file_type = None  # Prevent false positives in downstream logic
+
 
             # --- Run Compliance Check (only for JSON) ---
             from parser.local_evaluator import load_yaml_rule, evaluate_rule
 
             rules = load_yaml_rule(rule_path)
-            input_payload = report_data if file_type == "application/json" else {}
+            input_payload = report_data if isinstance(report_data, dict) and report_data else {}
 
             if input_payload:
                 with st.spinner("🔍 Running ESGine™ compliance check..."):
