@@ -7,15 +7,6 @@ st.set_page_config(
     layout="wide"
 )
 
-# --- Hide branding only (DO NOT tamper with sidebar layout or hamburger icon)
-st.markdown("""
-    <style>
-    #MainMenu {visibility: hidden;}
-    footer {visibility: hidden;}
-    header {visibility: hidden;}
-    </style>
-""", unsafe_allow_html=True)
-
 # --- Standard Library ---
 import os
 import sys
