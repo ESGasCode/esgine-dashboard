@@ -38,10 +38,6 @@ from PyPDF2 import PdfReader
 st.write("✅ PdfReader module loaded:", PdfReader)
 st.write("✅ docx module loaded:", docx.__name__)
 
-# --- Add Backend to Path ---
-backend_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'esgine-backend'))
-sys.path.insert(0, backend_path)
-
 # --- Local Modules ---
 from parser.local_evaluator import load_yaml_rule, evaluate_rule
 
