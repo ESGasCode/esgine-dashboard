@@ -74,13 +74,26 @@ section = st.sidebar.radio("Go to", ["Home", "Upload Report", "About", "Contact"
 # --- Upload Report Section ---
 if section == "Upload Report":
     st.header("📄 Upload ESG Report")
-    uploaded_file = st.file_uploader("Upload your ESG report (.docx or .pdf)", type=["docx", "pdf"])
+
+    # Upload input
+    uploaded_file = st.file_uploader("Choose a report file (.docx or .pdf)", type=["docx", "pdf"])
+
+    # Rule set selection
+    st.markdown("### 🏛️ Select Compliance Framework")
+    rule_options = {
+        "UK - FCA": "rules/uk-fca-esg.yaml",
+        "EU - SFDR": "rules/eu-sfdr.yaml",
+        "US - SEC": "rules/sec/sec-esg.yaml",
+        "Global - ISSB (IFRS S1 & S2)": "rules/issb/ifrs-s1-s2.yaml"
+    }
+    selected_rule = st.selectbox("Choose regulatory framework", list(rule_options.keys()))
+    rule_path = rule_options[selected_rule]
 
     if uploaded_file:
-        file_type = uploaded_file.type
-        extracted_text = ""
-
         try:
+            file_type, _ = mimetypes.guess_type(uploaded_file.name)
+            extracted_text = ""
+
             if file_type == "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
                 doc = docx.Document(uploaded_file)
                 extracted_text = "\n".join([para.text for para in doc.paragraphs])
@@ -88,20 +101,28 @@ if section == "Upload Report":
 
             elif file_type == "application/pdf":
                 reader = PdfReader(uploaded_file)
-                for page in reader.pages:
-                    extracted_text += page.extract_text() or ""
+                extracted_text = "\n".join([page.extract_text() or "" for page in reader.pages])
                 st.success("✅ PDF file parsed successfully.")
 
-            st.text_area("📋 Extracted Text", extracted_text, height=300)
+            else:
+                st.warning("⚠️ Unsupported file type.")
 
-            # --- ESGine Compliance Check ---
-            with st.spinner("🔍 Running ESGine™ compliance check..."):
-                result = run_rule_engine(extracted_text)
+            if extracted_text.strip():
+                st.markdown("### 📝 Extracted Report Text")
+                st.text_area("📋 Content Preview", extracted_text, height=300)
+
+                # Compliance check
+                with st.spinner("🔍 Running ESGine™ compliance check..."):
+                    rules = load_rule(rule_path)
+                    result = run_rule_engine(extracted_text, rules)
+
                 st.success("✅ Compliance check complete.")
+                st.metric(label="Compliance Score", value=f"{result['score']}%")
+                st.markdown("### 📊 Rule Evaluation Summary")
                 st.json(result)
 
         except Exception as e:
-            st.error(f"🚨 Error: {str(e)}")
+            st.error(f"🚨 An error occurred: {str(e)}")
 
 # --- Footer ---
 def show_footer():
@@ -109,7 +130,6 @@ def show_footer():
     st.caption(f"\u00a9 {datetime.now().year} ESGine – Built with ❤️ and ESG-as-Code™")
 
 show_footer()
-
 
 # Home Section
 if section == "Home":
