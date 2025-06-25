@@ -114,8 +114,6 @@ if section == "Home":
 
     """)
 
-    # --- Always Show Footer ---
-    show_footer()
     
 # --- Upload Report Section ---
 elif section == "Upload Report":
