@@ -19,3 +19,9 @@ compliance_check:
     optional: true
   - field: ghg_assurance_statement
     optional: true
+  - field: "carbon emissions"
+    must_exist: true
+  - field: "governance structure"
+    must_exist: true
+  - field: "risk management"
+    must_exist: true
