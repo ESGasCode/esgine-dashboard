@@ -252,7 +252,9 @@ elif section == "About":
 
 #### 🔁 ESGine Ecosystem Overview
     """)
-
+        
+        # --- Always Show Footer ---
+        show_footer()
 
 # ✅ Contact Section
 elif section == "Contact":
@@ -269,5 +271,5 @@ elif section == "Contact":
         # Optionally save to database or send via email here
    
         # --- Always Show Footer ---
-    show_footer()
+        show_footer()
 
