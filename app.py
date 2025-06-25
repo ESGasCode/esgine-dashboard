@@ -268,4 +268,6 @@ elif section == "Contact":
         st.success(f"Thanks {name}, your message has been received!")
         # Optionally save to database or send via email here
    
+        # --- Always Show Footer ---
+    show_footer()
 
