@@ -77,6 +77,8 @@ def show_footer():
         unsafe_allow_html=True
     )
 
+st.sidebar.success("✅ Sidebar loaded")  # Debug
+
 # --- Sidebar Navigation ---
 st.sidebar.header("Navigation")
 section = st.sidebar.radio("Go to", ["Home", "Upload Report", "About", "Contact"])
