@@ -111,7 +111,8 @@ if section == "Home":
     - 🌐 ISSB (Global)
 
     """)
-
+    # --- Always Show Footer ---
+    show_footer()
     
 # --- Upload Report Section ---
 elif section == "Upload Report":
