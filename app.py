@@ -7,16 +7,7 @@ st.set_page_config(
     layout="wide"
 )
 
-# ✅ Safe CSS: Hides branding but leaves sidebar controls alone
-st.markdown("""
-    <style>
-    #MainMenu {visibility: hidden;}
-    footer {visibility: hidden;}
-    header {visibility: hidden;}
-    </style>
-""", unsafe_allow_html=True)
-
-# --- Hide Streamlit Branding ---
+# --- Hide branding only (DO NOT tamper with sidebar layout or hamburger icon)
 st.markdown("""
     <style>
     #MainMenu {visibility: hidden;}
