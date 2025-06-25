@@ -34,10 +34,6 @@ import docx
 import docx2txt
 from PyPDF2 import PdfReader
 
-# ✅ Debug: confirm modules are loaded properly
-st.write("✅ PdfReader module loaded:", PdfReader)
-st.write("✅ docx module loaded:", docx.__name__)
-
 # --- Local Modules ---
 from parser.local_evaluator import load_yaml_rule, evaluate_rule
 
