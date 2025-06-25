@@ -1,13 +1,21 @@
-id: ISSB_IFRS_S2_NLP_001
+id: ISSB_IFRS_S2_NARRATIVE_001
 authority: ISSB
 jurisdiction: Global
-rule_type: narrative_check
-keywords:
-  - "Scope 1"
-  - "Scope 2"
-  - "greenhouse gas emissions"
-  - "IFRS S2"
+required_fields:
+  - climate_risk_description
+  - strategy_response
+  - governance_oversight
+  - risk_management_approach
+  - targets_and_metrics
+
 compliance_check:
-  - description: >
-      Must mention Scope 1 and Scope 2 GHG emissions in the context of IFRS S2.
-    logic: keywords_present
+  - field: climate_risk_description
+    must_contain: ["physical risks", "transition risks"]
+  - field: strategy_response
+    must_contain: ["resilience", "net zero", "adaptation"]
+  - field: governance_oversight
+    must_exist: true
+  - field: risk_management_approach
+    must_contain: ["integration", "enterprise risk", "process"]
+  - field: targets_and_metrics
+    must_contain: ["GHG emissions", "science-based targets", "KPIs"]
