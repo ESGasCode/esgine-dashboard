@@ -119,6 +119,9 @@ if section == "Home":
 show_footer()
     
 # --- Upload Report Section ---
+
+
+
 elif section == "Upload Report":
     st.subheader("📤 Upload Your ESG Report")
 
