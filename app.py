@@ -71,27 +71,6 @@ st.markdown("---")
 st.sidebar.header("Navigation")
 section = st.sidebar.radio("Go to", ["Home", "Upload Report", "About", "Contact"])
 
-# --- Upload Report Section ---
-if section == "Upload Report":
-    st.header("📄 Upload ESG Report")
-
-    # Upload input
-    uploaded_file = st.file_uploader("Choose a report file (.docx or .pdf)", type=["docx", "pdf"])
-
-    # Rule set selection
-    st.markdown("### 🏛️ Select Compliance Framework")
-    rule_options = {
-        "UK - FCA": "rules/uk-fca.esg.yaml",
-        "EU - SFDR": "rules/eu-sfdr.esg.yaml",
-        "US - SEC": "rules/us-sec.esg.yaml",
-        "Global - ISSB (IFRS S1 & S2)": "rules/issb/ifrs-s1-s2.yaml",
-        "Global - ISSB (IFRS S2 Narrative)": "rules/issb/ifrs-s2-narrative.yaml"
-    }
-
-    # --- Framework Selection ---
-selected_rule = st.selectbox("Choose regulatory framework", list(rule_options.keys()))
-rule_path = rule_options[selected_rule]
-
 # --- File Upload Handling ---
 if uploaded_file:
     try:
