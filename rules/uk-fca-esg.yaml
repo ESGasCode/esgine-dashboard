@@ -18,3 +18,10 @@ compliance_check:
     must_contain: ["mitigation", "independent"]
   - field: governance_review_process
     must_contain: ["annual", "oversight"]
+  - field: "carbon emissions"
+    must_exist: true
+  - field: "governance structure"
+    must_exist: true
+  - field: "risk management"
+    must_exist: true
+
