@@ -6,19 +6,15 @@ st.set_page_config(
     page_icon="🌿",
     layout="wide"
 )
-st.markdown(
-    """
+
+# ✅ Safe CSS: Hides branding but leaves sidebar controls alone
+st.markdown("""
     <style>
-    [data-testid="collapsedControl"] {
-        display: none;
-    }
-    section[data-testid="stSidebar"] {
-        display: block !important;
-    }
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    header {visibility: hidden;}
     </style>
-    """,
-    unsafe_allow_html=True
-)
+""", unsafe_allow_html=True)
 
 # --- Hide Streamlit Branding ---
 st.markdown("""
