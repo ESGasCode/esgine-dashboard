@@ -67,16 +67,24 @@ with col2:
 
 st.markdown("---")
 
+# --- Global Footer Function ---
+def show_footer():
+    current_year = datetime.now().year
+    st.markdown("---")
+    st.markdown(
+        f"""
+        <div style="text-align: center; font-size: 14px; color: #555;">
+            ESGine™ | ESG-as-Code™ | © {current_year} - ESGine Inc. All rights reserved.<br>
+            <a href="mailto:info@esgine.io">info@esgine.io</a> | <a href="https://www.esgine.io" target="_blank">www.esgine.io</a>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+
 # --- Sidebar Navigation ---
 st.sidebar.header("Navigation")
 section = st.sidebar.radio("Go to", ["Home", "Upload Report", "About", "Contact"])
-
-# --- Footer ---
-def show_footer():
-    st.markdown("---")
-    st.caption(f"\u00a9 {datetime.now().year} ESGine – Built with ❤️ and ESG-as-Code™")
-
-show_footer()
 
 # Home Section
 if section == "Home":
@@ -107,21 +115,6 @@ if section == "Home":
 
     """)
        
-    def show_footer():
-        current_year = datetime.now().year
-        st.markdown("---")
-        st.markdown(
-            f"""
-            <div style="text-align: center; font-size: 14px; color: #555;">
-                ESGine™ | ESG-as-Code™ | © {current_year} - ESGine Inc. All rights reserved.<br>
-                <a href="mailto:info@esgine.io">info@esgine.io</a> | <a>www.esgine.io</a>
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
-        # This ensures footer is always displayed
-        show_footer()
-
     
 # --- Upload Report Section ---
 elif section == "Upload Report":
@@ -264,21 +257,7 @@ elif section == "About":
 #### 🔁 ESGine Ecosystem Overview
     """)
     
-    def show_footer():
-        current_year = datetime.now().year
-        st.markdown("---")
-        st.markdown(
-            f"""
-            <div style="text-align: center; font-size: 14px; color: #555;">
-                ESGine™ | ESG-as-Code™ | © {current_year} - ESGine Inc. All rights reserved.<br>
-                <a href="mailto:info@esgine.io">info@esgine.io</a> | <a>www.esgine.io</a>
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
-    # This ensures footer is always displayed
-    show_footer()
-
+  
 
 # ✅ Contact Section
 elif section == "Contact":
@@ -294,18 +273,4 @@ elif section == "Contact":
         st.success(f"Thanks {name}, your message has been received!")
         # Optionally save to database or send via email here
    
-    
-    def show_footer():
-        current_year = datetime.now().year
-        st.markdown("---")
-        st.markdown(
-            f"""
-            <div style="text-align: center; font-size: 14px; color: #555;">
-                ESGine™ | ESG-as-Code™ | © {current_year} - ESGine Inc. All rights reserved.<br>
-                <a href="mailto:info@esgine.io">info@esgine.io</a> | <a>www.esgine.io</a>
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
-    # This ensures footer is always displayed
-    show_footer()
+   
