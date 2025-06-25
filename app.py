@@ -1,13 +1,13 @@
 import streamlit as st
 
-# Set page metadata (title + icon + layout)
+# --- Set Page Metadata ---
 st.set_page_config(
-    page_title="ESGine",
-    page_icon="🌍",
+    page_title="ESGine Dashboard",
+    page_icon="🌿",
     layout="wide"
 )
 
-# Hide Streamlit branding elements for a cleaner UI
+# --- Hide Streamlit Branding ---
 st.markdown("""
     <style>
     #MainMenu {visibility: hidden;}
@@ -30,13 +30,18 @@ import matplotlib.pyplot as plt
 from fpdf import FPDF
 from PIL import Image
 import yaml
-import docx 
+import docx
 import docx2txt
-from PyPDF2 import PdfReader 
+from PyPDF2 import PdfReader
+
+# --- Add Backend to Path ---
+backend_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'esgine-backend'))
+sys.path.insert(0, backend_path)
 
 # --- Local Modules ---
 from parser.rule_engine import run_rule_engine
 
+# --- PDF Template for Export (Optional Future Use) ---
 class PDF(FPDF):
     def header(self):
         self.set_font('Arial', 'B', 14)
@@ -47,26 +52,10 @@ class PDF(FPDF):
         self.set_font('Arial', 'I', 8)
         self.cell(0, 10, f'Page {self.page_no()}', 0, 0, 'C')
 
-
-# Add the esgine-backend directory to the path
-backend_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'esgine-backend'))
-sys.path.insert(0, backend_path)
-
-# Now you can import the parser
-from parser.rule_engine import run_rule_engine
-
-# Set page config
-st.set_page_config(
-    page_title="ESGine Dashboard",
-    page_icon="🌿",
-    layout="wide"
-)
-
-# Load logo image
-logo_path = "assets/esgine-logo.png"  # Update if different logo name
+# --- Load Logo ---
+logo_path = "assets/esgine-logo.png"
 logo = Image.open(logo_path)
 
-# Display logo and tagline
 col1, col2 = st.columns([1, 8])
 with col1:
     st.image(logo, width=90)
@@ -82,10 +71,45 @@ st.markdown("---")
 st.sidebar.header("Navigation")
 section = st.sidebar.radio("Go to", ["Home", "Upload Report", "About", "Contact"])
 
-# --- Footer function ---
+# --- Upload Report Section ---
+if section == "Upload Report":
+    st.header("📄 Upload ESG Report")
+    uploaded_file = st.file_uploader("Upload your ESG report (.docx or .pdf)", type=["docx", "pdf"])
+
+    if uploaded_file:
+        file_type = uploaded_file.type
+        extracted_text = ""
+
+        try:
+            if file_type == "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
+                doc = docx.Document(uploaded_file)
+                extracted_text = "\n".join([para.text for para in doc.paragraphs])
+                st.success("✅ DOCX file parsed successfully.")
+
+            elif file_type == "application/pdf":
+                reader = PdfReader(uploaded_file)
+                for page in reader.pages:
+                    extracted_text += page.extract_text() or ""
+                st.success("✅ PDF file parsed successfully.")
+
+            st.text_area("📋 Extracted Text", extracted_text, height=300)
+
+            # --- ESGine Compliance Check ---
+            with st.spinner("🔍 Running ESGine™ compliance check..."):
+                result = run_rule_engine(extracted_text)
+                st.success("✅ Compliance check complete.")
+                st.json(result)
+
+        except Exception as e:
+            st.error(f"🚨 Error: {str(e)}")
+
+# --- Footer ---
 def show_footer():
     st.markdown("---")
     st.caption(f"\u00a9 {datetime.now().year} ESGine – Built with ❤️ and ESG-as-Code™")
+
+show_footer()
+
 
 # Home Section
 if section == "Home":
