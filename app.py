@@ -121,6 +121,7 @@ show_footer()
 # --- Upload Report Section ---
 elif section == "Upload Report":
     st.subheader("📤 Upload Your ESG Report")
+
     # Upload input
     uploaded_file = st.file_uploader("Choose a file (.json, .pdf, .docx, .txt)", type=["json", "pdf", "docx", "txt"])
 
@@ -135,7 +136,7 @@ elif section == "Upload Report":
     selected_rule = st.selectbox("Choose regulatory framework", list(rule_options.keys()))
     rule_path = rule_options[selected_rule]
 
-if uploaded_file:
+    if uploaded_file:
         try:
             file_type, _ = mimetypes.guess_type(uploaded_file.name)
             st.success(f"✅ File uploaded: `{uploaded_file.name}`")
@@ -164,7 +165,7 @@ if uploaded_file:
 
             else:
                 st.warning("⚠️ Unsupported file type. Please upload JSON, PDF, DOCX, or TXT.")
-                return
+                st.stop()
 
             # --- Run Compliance Check (only for JSON) ---
             from parser.local_evaluator import load_yaml_rule, evaluate_rule
@@ -243,9 +244,8 @@ if uploaded_file:
         except Exception as e:
             st.error(f"🚨 An unexpected error occurred: {str(e)}")
 
-# --- Always Show Footer ---
-show_footer()
-
+    # --- Always Show Footer ---
+    show_footer()
 # ✅ About Section
 elif section == "About":    
     st.subheader("📘 About ESGine")
