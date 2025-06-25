@@ -97,11 +97,7 @@ section = st.sidebar.radio("Go to", ["Home", "Upload Report", "About", "Contact"
 st.write("🔍 Currently selected:", section)  # TEMP DEBUG
 
 
-st.sidebar.success("✅ Sidebar loaded")  # Debug
 
-# --- Sidebar Navigation ---
-st.sidebar.header("Navigation")
-section = st.sidebar.radio("Go to", ["Home", "Upload Report", "About", "Contact"])
 
 # Home Section
 if section == "Home":
