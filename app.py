@@ -114,7 +114,9 @@ if section == "Home":
     - 🌐 ISSB (Global)
 
     """)
-       
+
+# --- Always Show Footer ---
+show_footer()
     
 # --- Upload Report Section ---
 elif section == "Upload Report":
@@ -242,8 +244,8 @@ elif section == "Upload Report":
         except Exception as e:
             st.error(f"🚨 An unexpected error occurred: {str(e)}")
 
-        show_footer()
-
+# --- Always Show Footer ---
+show_footer()
 
 # ✅ About Section
 elif section == "About":    
@@ -258,7 +260,8 @@ elif section == "About":
 #### 🔁 ESGine Ecosystem Overview
     """)
     
-        show_footer()
+# --- Always Show Footer ---
+show_footer()
 
 # ✅ Contact Section
 elif section == "Contact":
@@ -274,5 +277,5 @@ elif section == "Contact":
         st.success(f"Thanks {name}, your message has been received!")
         # Optionally save to database or send via email here
    
-       show_footer()
-
+# --- Always Show Footer ---
+show_footer()
