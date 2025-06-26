@@ -79,7 +79,7 @@ def generate_pdf_report(selected_rule, result):
             field = rule.get("field", "N/A")
             pdf.multi_cell(0, 10, f"- {field} → {status}")
         else:
-            # Fallback for unexpected formats (e.g., plain strings)
+            # It's not a dict (probably a string or something else), print as fallback
             pdf.multi_cell(0, 10, f"- {rule}")
 
     # Ensure output with full unicode support
