@@ -205,11 +205,23 @@ elif section == "Upload Report":
 
     uploaded_file = st.file_uploader("Choose a file (.json, .pdf, .docx, .txt)", type=["json", "pdf", "docx", "txt"])
 
+    # Rule set selection
+    st.markdown("### 🏛️ Select Compliance Framework")
+    rule_options = {
+        "UK - FCA": "rules/uk-fca-esg.yaml",
+        "EU - SFDR": "rules/eu-sfdr.yaml",
+        "US - SEC": "rules/us-sec-esg.yaml",
+        "Global - ISSB (IFRS S1 & S2)": "rules/issb/ifrs-s1-s2.yaml"
+    }
+    selected_rule = st.selectbox("Choose regulatory framework", list(rule_options.keys()))
+    rule_path = rule_options[selected_rule]
+
     if uploaded_file:
         try:
             file_type = uploaded_file.type
             report_data = {}
 
+            # Parse uploaded content into ESG-compliant dict
             if file_type == "application/json":
                 report_data = json.load(uploaded_file)
 
@@ -219,7 +231,6 @@ elif section == "Upload Report":
                 report_data = convert_text_to_json(extracted_text)
 
             elif file_type == "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
-                import docx2txt
                 extracted_text = docx2txt.process(uploaded_file)
                 report_data = convert_text_to_json(extracted_text)
 
@@ -230,45 +241,46 @@ elif section == "Upload Report":
             else:
                 st.warning("❌ Unsupported file format.")
 
-            # ✅ Proceed to evaluate if data was parsed
-            if report_data:
-                # Now continue with rule evaluation
-                rules = load_yaml_rule(rule_path)
-                result_list = evaluate_rule(rules, report_data)
+            if isinstance(report_data, dict) and report_data:
+                with st.spinner("🔍 Running ESGine compliance check..."):
+                    rules = load_yaml_rule(rule_path)
+                    result_list = evaluate_rule(rules, report_data)
 
-                passed = sum(1 for r in result_list if isinstance(r, dict) and "✅" in str(r.get("status")))
-                failed = sum(1 for r in result_list if isinstance(r, dict) and "❌" in str(r.get("status")))
-                total = passed + failed
-                score = round((passed / total) * 100, 2) if total > 0 else 0
+                    passed = sum(1 for r in result_list if isinstance(r, dict) and "✅" in str(r.get("status")))
+                    failed = sum(1 for r in result_list if isinstance(r, dict) and "❌" in str(r.get("status")))
+                    total = passed + failed
+                    score = round((passed / total) * 100, 2) if total > 0 else 0
 
-                result = {
-                    "score": score,
-                    "passed": passed,
-                    "failed": failed,
-                    "rules": result_list
-                }
+                    result = {
+                        "score": score,
+                        "passed": passed,
+                        "failed": failed,
+                        "rules": result_list
+                    }
 
-                # Continue with chart + download code
-                st.success("✅ ESG compliance analysis completed.")
-                st.metric("Compliance Score", f"{score}%")
-                st.markdown("### 📊 Rule Evaluation")
-                st.dataframe(pd.DataFrame(result["rules"]))
+                    st.success("✅ ESG compliance analysis completed.")
+                    st.metric("Compliance Score", f"{score}%")
+                    st.markdown("### 📊 Rule Evaluation")
+                    st.dataframe(pd.DataFrame(result["rules"]))
 
-                # Pie chart
-                if total > 0:
-                    import matplotlib.pyplot as plt
-                    st.markdown("### 📈 Summary Chart")
-                    fig, ax = plt.subplots()
-                    ax.pie([passed, failed], labels=["Passed", "Failed"], autopct="%1.1f%%", startangle=90)
-                    ax.axis("equal")
-                    st.pyplot(fig)
+                    if total > 0:
+                        st.markdown("### 📈 Summary Chart")
+                        fig, ax = plt.subplots()
+                        ax.pie([passed, failed], labels=["Passed", "Failed"], autopct="%1.1f%%", startangle=90)
+                        ax.axis("equal")
+                        st.pyplot(fig)
 
-                # Download buttons
-                st.download_button("📥 Download JSON Result", data=json.dumps(result, indent=2), file_name="esgine_result.json", mime="application/json")
+                    # --- Download Buttons ---
+                    st.download_button("📥 Download JSON Result",
+                                       data=json.dumps(result, indent=2),
+                                       file_name="esgine_result.json",
+                                       mime="application/json")
 
-                pdf_bytes = generate_pdf_report(selected_rule, result)
-                st.download_button("📄 Download ESGine PDF Report", data=pdf_bytes, file_name="esgine_compliance_report.pdf", mime="application/pdf")
-
+                    pdf_bytes = generate_pdf_report(selected_rule, result)
+                    st.download_button("📄 Download ESGine PDF Report",
+                                       data=pdf_bytes,
+                                       file_name="esgine_compliance_report.pdf",
+                                       mime="application/pdf")
             else:
                 st.warning("⚠️ Could not extract ESG data from the uploaded file.")
 
@@ -276,6 +288,7 @@ elif section == "Upload Report":
             st.error(f"🚨 An unexpected error occurred: {str(e)}")
 
         show_footer()
+
 
 # ✅ About Section
 elif section == "About":    
