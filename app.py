@@ -16,6 +16,19 @@ import urllib.request
 import mimetypes
 from datetime import datetime
 
+# --- Ensure DejaVu Font for Unicode support ---
+def ensure_dejavu_font():
+    font_dir = "fonts"
+    os.makedirs(font_dir, exist_ok=True)
+    font_path = os.path.join(font_dir, "DejaVuSans.ttf")
+    if not os.path.exists(font_path):
+        url = "https://github.com/dejavu-fonts/dejavu-fonts/raw/version_2_37/ttf/DejaVuSans.ttf"
+        urllib.request.urlretrieve(url, font_path)
+        print("✅ DejaVuSans.ttf downloaded.")
+    return font_path
+
+font_path = ensure_dejavu_font()
+
 # --- Third-Party Libraries ---
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -58,19 +71,23 @@ class PDF(FPDF):
         self.set_font("DejaVu", "", 8)
         self.cell(0, 10, f'Page {self.page_no()}', 0, 0, 'C')
 
-# --- PDF Report Generator Function ---
+# --- PDF Generator (Unicode Compatible) ---
 def generate_pdf_report(selected_rule, result):
-    from fpdf import FPDF
     pdf = FPDF()
     pdf.add_page()
-    pdf.set_font("Arial", size=12)
+
+    # Use Unicode font
+    pdf.add_font("DejaVu", "", "DejaVuSans.ttf", uni=True)
+    pdf.set_font("DejaVu", "", 12)
+
     pdf.multi_cell(0, 10, f"Selected Rule: {selected_rule}")
     pdf.multi_cell(0, 10, f"Score: {result['score']}%")
-    pdf.multi_cell(0, 10, f"Passed: {result['passed']} | Failed: {result['failed']}")
+    pdf.multi_cell(0, 10, f"✅ Passed: {result['passed']} | ❌ Failed: {result['failed']}")
     pdf.ln()
-    pdf.set_font("Arial", "B", 12)
+    pdf.set_font("DejaVu", "B", 12)
     pdf.cell(0, 10, "Rule Breakdown:", ln=True)
-    pdf.set_font("Arial", "", 11)
+    pdf.set_font("DejaVu", "", 11)
+
     for rule in result["rules"]:
         if isinstance(rule, dict):
             field = rule.get("field", "N/A")
@@ -78,10 +95,8 @@ def generate_pdf_report(selected_rule, result):
             pdf.multi_cell(0, 10, f"- {field} → {status}")
         else:
             pdf.multi_cell(0, 10, f"- {str(rule)}")
-    return pdf.output(dest="S").encode("latin-1", "replace")
 
-    # Ensure output with full unicode support
-    return pdf.output(dest="S")
+    return pdf.output(dest="S").encode("utf-8")
 
 # --- Load ESGine Logo ---
 logo_path = "assets/esgine-logo.png"
