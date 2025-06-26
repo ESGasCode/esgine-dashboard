@@ -253,11 +253,15 @@ elif section == "Upload Report":
                     score = round((passed / total) * 100, 2) if total > 0 else 0
 
                     result = {
-                        "score": score,
-                        "passed": passed,
-                        "failed": failed,
-                        "rules": result_list
+                      "score": 0,
+                      "passed": 2,
+                      "failed": 7,
+                      "rules": [
+                        {"field": "scope_1_emissions", "status": false, "description": "❌ Missing required field"},
+                        ...
+                      ]
                     }
+
 
                     st.success("✅ ESG compliance analysis completed.")
                     st.metric("Compliance Score", f"{score}%")
@@ -295,6 +299,7 @@ elif section == "Upload Report":
         except Exception as e:
             st.error(f"🚨 An unexpected error occurred: {str(e)}")
 
+        # --- Always Show Footer ---
         show_footer()
 
 # ✅ About Section
