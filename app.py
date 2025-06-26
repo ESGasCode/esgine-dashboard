@@ -74,13 +74,13 @@ def generate_pdf_report(selected_rule, result):
     pdf.cell(0, 10, "📋 Rule Breakdown:", ln=True)
 
     for rule in result["rules"]:
-    if isinstance(rule, dict):
-        status = rule.get("status", "")
-        field = rule.get("field", "N/A")
-        pdf.multi_cell(0, 10, f"- {field} → {status}")
-    else:
-        # Fallback for plain string errors
-        pdf.multi_cell(0, 10, f"- {rule}")
+        if isinstance(rule, dict):
+            status = rule.get("status", "")
+            field = rule.get("field", "N/A")
+            pdf.multi_cell(0, 10, f"- {field} → {status}")
+        else:
+            # Fallback for unexpected formats (e.g., plain strings)
+            pdf.multi_cell(0, 10, f"- {rule}")
 
     # Ensure output with full unicode support
     return pdf.output(dest="S").encode("latin1", errors="ignore")
