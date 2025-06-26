@@ -85,7 +85,6 @@ def generate_pdf_report(selected_rule, result):
     # Ensure output with full unicode support
     return pdf.output(dest="S").encode("latin1", errors="ignore")
 
-
 # --- Load ESGine Logo ---
 logo_path = "assets/esgine-logo.png"
 logo = Image.open(logo_path)
