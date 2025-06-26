@@ -253,15 +253,11 @@ elif section == "Upload Report":
                     score = round((passed / total) * 100, 2) if total > 0 else 0
 
                     result = {
-                      "score": 0,
-                      "passed": 2,
-                      "failed": 7,
-                      "rules": [
-                        {"field": "scope_1_emissions", "status": false, "description": "❌ Missing required field"},
-                        ...
-                      ]
+                        "score": score,
+                        "passed": passed,
+                        "failed": failed,
+                        "rules": result_list
                     }
-
 
                     st.success("✅ ESG compliance analysis completed.")
                     st.metric("Compliance Score", f"{score}%")
