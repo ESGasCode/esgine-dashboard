@@ -196,17 +196,13 @@ elif section == "Upload Report":
                     result_list = evaluate_rule(rules, input_payload)
             
                     # Safely count results
-                    passed = sum(1 for r in result_list if "✅" in str(r.get("status", "")))
-                    failed = sum(1 for r in result_list if "❌" in str(r.get("status", "")))
+                    passed = sum(1 for r in result_list if isinstance(r.get("status"), str) and "✅" in r["status"])
+                    failed = sum(1 for r in result_list if isinstance(r.get("status"), str) and "❌" in r["status"])
             
                     # Prevent NaN or zero division errors
                     total = passed + failed
-                    if total > 0:
-                        score = round((passed / total) * 100, 2)
-                        if math.isnan(score):
-                            score = 0
-                    else:
-                        score = 0
+                    score = round((passed / total) * 100, 2) if total > 0 else 0
+                    score = score if not math.isnan(score) else 0
             
                     result = {
                         "score": score,
@@ -220,8 +216,7 @@ elif section == "Upload Report":
                     st.metric("Compliance Score", f"{score}%")
                     st.markdown("### 📊 Rule Evaluation")
                     st.dataframe(pd.DataFrame(result["rules"]))
-
-
+            
                     # --- Score Feedback ---
                     if score < 50:
                         st.error("🚨 Score below 50% — major compliance gaps.")
@@ -229,15 +224,19 @@ elif section == "Upload Report":
                         st.warning("⚠️ Score between 50–75% — moderate gaps, needs work.")
                     else:
                         st.success("✅ Score above 75% — strong ESG alignment.")
+            
+                    # --- Summary Pie Chart ---
+                    if total > 0:
+                        st.markdown("### 📈 Summary Chart")
+                        labels = ['Passed', 'Failed']
+                        sizes = [passed, failed]
+                        fig, ax = plt.subplots()
+                        ax.pie(sizes, labels=labels, autopct='%1.1f%%', startangle=90, colors=['#2ecc71', '#e74c3c'])
+                        ax.axis('equal')
+                        st.pyplot(fig)
+                    else:
+                        st.warning("⚠️ No rules matched or evaluated. Nothing to visualize.")
 
-                    # --- Visual Summary ---
-                    st.markdown("### 📈 Summary Chart")
-                    labels = ['Passed', 'Failed']
-                    sizes = [passed, failed]
-                    fig, ax = plt.subplots()
-                    ax.pie(sizes, labels=labels, autopct='%1.1f%%', startangle=90, colors=['#2ecc71', '#e74c3c'])
-                    ax.axis('equal')
-                    st.pyplot(fig)
 
                     # --- Download JSON ---
                     st.markdown("### 📥 Download Reports")
