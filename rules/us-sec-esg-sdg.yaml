@@ -1,0 +1,55 @@
+- id: SEC-001
+  title: Climate Risk Disclosure
+  description: Report should describe climate-related risks and their potential financial
+    impacts.
+  condition: climate_risks is not None
+  message: No climate risk disclosure found.
+  sdg:
+  - SDG 13
+  - SDG 12
+- id: SEC-002
+  title: GHG Emissions Reporting
+  description: Report should provide Scope 1 and Scope 2 greenhouse gas emissions.
+  condition: ghg_emissions is not None
+  message: GHG emissions not reported.
+  sdg:
+  - SDG 13
+  - SDG 7
+- id: SEC-003
+  title: ESG Oversight by Governance
+  description: Report should state how governance structures oversee ESG issues.
+  condition: governance_structure is not None
+  message: No ESG governance oversight reported.
+  sdg:
+  - SDG 16
+- id: SEC-004
+  title: Human Capital Management
+  description: Report should include information about workforce policies and conditions.
+  condition: human_capital is not None
+  message: Human capital details missing.
+  sdg:
+  - SDG 8
+  - SDG 10
+- id: SEC-005
+  title: Board Diversity Disclosure
+  description: Report should disclose board diversity statistics and policies.
+  condition: board_diversity is not None
+  message: No board diversity information provided.
+  sdg:
+  - SDG 5
+  - SDG 10
+- id: SEC-006
+  title: Cybersecurity Governance
+  description: Report should detail how the board manages cybersecurity risks.
+  condition: cybersecurity_governance is not None
+  message: No cybersecurity governance disclosure.
+  sdg:
+  - SDG 9
+  - SDG 16
+- id: SEC-007
+  title: Stakeholder Engagement Disclosure
+  description: Report should explain how stakeholders are engaged in ESG strategy.
+  condition: stakeholder_engagement is not None
+  message: No stakeholder engagement disclosure.
+  sdg:
+  - SDG 17
