@@ -186,28 +186,41 @@ elif section == "Upload Report":
 
             # --- Run Compliance Check (only for JSON) ---
             from parser.local_evaluator import load_yaml_rule, evaluate_rule
-
+            import math
+            
             rules = load_yaml_rule(rule_path)
             input_payload = report_data if isinstance(report_data, dict) and report_data else {}
-
+            
             if input_payload:
                 with st.spinner("🔍 Running ESGine™ compliance check..."):
                     result_list = evaluate_rule(rules, input_payload)
-                    passed = sum(1 for r in result_list if "✅" in str(r["status"]))
-                    failed = sum(1 for r in result_list if "❌" in str(r["status"]))
-                    score = round((passed / (passed + failed)) * 100, 2) if passed + failed > 0 else 0
-
+            
+                    # Safely count results
+                    passed = sum(1 for r in result_list if "✅" in str(r.get("status", "")))
+                    failed = sum(1 for r in result_list if "❌" in str(r.get("status", "")))
+            
+                    # Prevent NaN or zero division errors
+                    total = passed + failed
+                    if total > 0:
+                        score = round((passed / total) * 100, 2)
+                        if math.isnan(score):
+                            score = 0
+                    else:
+                        score = 0
+            
                     result = {
                         "score": score,
                         "passed": passed,
                         "failed": failed,
                         "rules": result_list
                     }
-
+            
+                    # --- Display UI feedback ---
                     st.success("✅ ESG compliance analysis completed.")
                     st.metric("Compliance Score", f"{score}%")
                     st.markdown("### 📊 Rule Evaluation")
                     st.dataframe(pd.DataFrame(result["rules"]))
+
 
                     # --- Score Feedback ---
                     if score < 50:
