@@ -1,0 +1,51 @@
+- id: SFDR-001
+  title: Principal Adverse Impacts Disclosure
+  description: Report should identify and explain principal adverse sustainability
+    impacts.
+  condition: adverse_impacts is not None
+  message: No disclosure of principal adverse impacts.
+  sdg:
+  - SDG 12
+  - SDG 13
+- id: SFDR-002
+  title: Sustainability Risks in Investment Decisions
+  description: Report should describe how sustainability risks are integrated into
+    investment decisions.
+  condition: sustainability_risks is not None
+  message: Sustainability risk integration missing.
+  sdg:
+  - SDG 13
+  - SDG 16
+- id: SFDR-003
+  title: Social and Employee Matters
+  description: Report should disclose how social and employee issues are considered.
+  condition: social_issues is not None
+  message: No disclosure on social and employee matters.
+  sdg:
+  - SDG 5
+  - SDG 8
+  - SDG 10
+- id: SFDR-004
+  title: Environmental Characteristics Disclosure
+  description: Report should outline environmental features promoted by the financial
+    product.
+  condition: environmental_characteristics is not None
+  message: Environmental characteristics not disclosed.
+  sdg:
+  - SDG 6
+  - SDG 7
+  - SDG 13
+- id: SFDR-005
+  title: Due Diligence Statement
+  description: Report should include a due diligence statement on sustainability.
+  condition: due_diligence_statement is not None
+  message: No due diligence statement found.
+  sdg:
+  - SDG 16
+- id: SFDR-006
+  title: Engagement Policies
+  description: Report should describe engagement with investee companies on ESG matters.
+  condition: engagement_policies is not None
+  message: Engagement policy disclosure missing.
+  sdg:
+  - SDG 17
