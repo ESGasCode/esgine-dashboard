@@ -76,19 +76,20 @@ def generate_pdf_report(selected_rule, result):
     pdf = FPDF()
     pdf.add_page()
 
-    # Use Unicode-compatible font from 'fonts' directory
-    font_path = os.path.join("fonts", "DejaVuSans.ttf")
-    pdf.add_font("DejaVu", "", font_path, uni=True)
-    pdf.set_font("DejaVu", "", 12)
+    # Add DejaVu Unicode fonts (Regular and Bold)
+    pdf.add_font("DejaVu", "", "fonts/DejaVuSans.ttf", uni=True)
+    pdf.add_font("DejaVu", "B", "fonts/DejaVuSans-Bold.ttf", uni=True)
 
-    pdf.multi_cell(0, 10, f"Selected Rule: {selected_rule}")
-    pdf.multi_cell(0, 10, f"Score: {result['score']}%")
+    pdf.set_font("DejaVu", "", 12)
+    pdf.multi_cell(0, 10, f"📘 Selected Rule: {selected_rule}")
+    pdf.multi_cell(0, 10, f"✅ Score: {result['score']}%")
     pdf.multi_cell(0, 10, f"✅ Passed: {result['passed']} | ❌ Failed: {result['failed']}")
     pdf.ln()
-    pdf.set_font("DejaVu", "B", 12)
-    pdf.cell(0, 10, "Rule Breakdown:", ln=True)
-    pdf.set_font("DejaVu", "", 11)
 
+    pdf.set_font("DejaVu", "B", 12)
+    pdf.cell(0, 10, "📋 Rule Breakdown:", ln=True)
+
+    pdf.set_font("DejaVu", "", 11)
     for rule in result["rules"]:
         if isinstance(rule, dict):
             field = rule.get("field", "N/A")
