@@ -73,15 +73,16 @@ class PDF(FPDF):
 
 # --- PDF Generator (Unicode Compatible) ---
 def generate_pdf_report(selected_rule, result):
-    font_dir = "fonts"
-    font_regular = os.path.join(font_dir, "DejaVuSans.ttf")
-    font_bold = os.path.join(font_dir, "DejaVuSans-Bold.ttf")
-
     pdf = FPDF()
     pdf.add_page()
 
-    pdf.add_font("DejaVu", "", font_regular, uni=True)
-    pdf.add_font("DejaVu", "B", font_bold, uni=True)
+    # Set Unicode font
+    pdf.add_font("DejaVu", "", "fonts/DejaVuSans.ttf", uni=True)
+    pdf.add_font("DejaVu", "B", "fonts/DejaVuSans-Bold.ttf", uni=True)
+
+    pdf.set_font("DejaVu", "B", 14)
+    pdf.cell(0, 10, "ESGine Compliance Report", ln=True, align="C")
+    pdf.ln()
 
     pdf.set_font("DejaVu", "", 12)
     pdf.multi_cell(0, 10, f"Selected Rule: {selected_rule}")
@@ -94,11 +95,11 @@ def generate_pdf_report(selected_rule, result):
     pdf.set_font("DejaVu", "", 11)
 
     for rule in result.get("rules", []):
-        field = rule.get("field", "N/A")
-        status = rule.get("status", "N/A")
-        description = rule.get("description", "")
-        icon = "✅" if status else "❌"
-        pdf.multi_cell(0, 10, f"- {field} {icon} {description}")
+        if isinstance(rule, dict):
+            field = rule.get("field", "N/A")
+            status = "✅" if rule.get("status") else "❌"
+            description = rule.get("description", "")
+            pdf.multi_cell(0, 10, f"- {field}: {status} | {description}")
 
     return pdf.output(dest="S").encode("utf-8")
 
@@ -246,8 +247,9 @@ elif section == "Upload Report":
                 with st.spinner("🔍 Running ESGine compliance check..."):
                     result_list = evaluate_rule(rules, report_data)
 
-                    passed = sum(1 for r in result_list if isinstance(r, dict) and "✅" in str(r.get("status")))
-                    failed = sum(1 for r in result_list if isinstance(r, dict) and "❌" in str(r.get("status")))
+                    passed = sum(1 for r in result_list if isinstance(r, dict) and r.get("status") is True)
+                    failed = sum(1 for r in result_list if isinstance(r, dict) and r.get("status") is False)
+
 
                     total = passed + failed
                     score = round((passed / total) * 100, 2) if total > 0 else 0
