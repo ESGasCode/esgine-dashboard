@@ -1,0 +1,70 @@
+- id: ENV-001
+  title: Carbon Emissions Disclosure
+  description: Report should disclose Scope 1 and 2 carbon emissions.
+  condition: carbon_emissions is not None
+  message: Missing carbon emissions disclosure.
+  sdg:
+  - SDG 13
+  - SDG 12
+- id: ENV-002
+  title: Renewable Energy Use
+  description: Report should include data on renewable energy consumption.
+  condition: energy_renewable is not None
+  message: No renewable energy data provided.
+  sdg:
+  - SDG 7
+  - SDG 13
+- id: ENV-003
+  title: Water Use and Conservation
+  description: Report should discuss water usage and conservation measures.
+  condition: water_use is not None
+  message: No information on water use or conservation.
+  sdg:
+  - SDG 6
+  - SDG 12
+- id: SOC-001
+  title: Workforce Diversity
+  description: Report should disclose gender and ethnic diversity statistics.
+  condition: diversity_metrics is not None
+  message: Diversity data not disclosed.
+  sdg:
+  - SDG 5
+  - SDG 10
+- id: SOC-002
+  title: Employee Training Programs
+  description: Report should detail training and development programs for staff.
+  condition: training_programs is not None
+  message: Training programs not discussed.
+  sdg:
+  - SDG 4
+  - SDG 8
+- id: SOC-003
+  title: Health and Safety Measures
+  description: Report should highlight employee health and safety initiatives.
+  condition: health_safety is not None
+  message: Health and safety details missing.
+  sdg:
+  - SDG 3
+  - SDG 8
+- id: GOV-001
+  title: Board ESG Oversight
+  description: Report should outline how the board oversees ESG responsibilities.
+  condition: governance_structure is not None
+  message: No board ESG oversight mentioned.
+  sdg:
+  - SDG 16
+- id: GOV-002
+  title: Stakeholder Engagement
+  description: Report should describe engagement with stakeholders and partnerships.
+  condition: stakeholder_engagement is not None
+  message: No stakeholder engagement described.
+  sdg:
+  - SDG 17
+- id: GOV-003
+  title: Innovation and Infrastructure Reporting
+  description: Report should mention innovations or sustainable infrastructure efforts.
+  condition: innovation_projects is not None
+  message: No information on innovation or infrastructure projects.
+  sdg:
+  - SDG 9
+  - SDG 11
