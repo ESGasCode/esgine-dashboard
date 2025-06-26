@@ -76,8 +76,9 @@ def generate_pdf_report(selected_rule, result):
     pdf = FPDF()
     pdf.add_page()
 
-    # Use Unicode font
-    pdf.add_font("DejaVu", "", "DejaVuSans.ttf", uni=True)
+    # Use Unicode-compatible font from 'fonts' directory
+    font_path = os.path.join("fonts", "DejaVuSans.ttf")
+    pdf.add_font("DejaVu", "", font_path, uni=True)
     pdf.set_font("DejaVu", "", 12)
 
     pdf.multi_cell(0, 10, f"Selected Rule: {selected_rule}")
