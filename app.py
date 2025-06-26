@@ -280,11 +280,6 @@ elif section == "Upload Report":
                         file_name="esgine_result.json",
                         mime="application/json"
                     )
-
-                    # --- Debug: Check result content before PDF generation ---
-                    st.write("🧪 result keys:", result.keys())
-                    st.write("🧪 result['rules'] type:", type(result.get("rules")))
-                    st.write("🧪 result['rules'] content:", result.get("rules"))
                     
                     # --- PDF Report Download using global Unicode-compatible generator ---
                     pdf_bytes = generate_pdf_report(selected_rule, result)
