@@ -115,7 +115,7 @@ elif section == "Upload Report":
     rule_options = {
         "UK - FCA": "rules/uk-fca-esg.yaml",
         "EU - SFDR": "rules/eu-sfdr.yaml",
-        "US - SEC": "rules/sec/sec-esg.yaml",
+        "US - SEC": "rules/us-sec-esg.yaml",
         "Global - ISSB (IFRS S1 & S2)": "rules/issb/ifrs-s1-s2.yaml"
     }
     selected_rule = st.selectbox("Choose regulatory framework", list(rule_options.keys()))
