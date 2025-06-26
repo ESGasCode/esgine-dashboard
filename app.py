@@ -156,10 +156,8 @@ if section == "Home":
 elif section == "Upload Report":
     st.subheader("📤 Upload Your ESG Report")
 
-    # Upload input
     uploaded_file = st.file_uploader("Choose a file (.json, .pdf, .docx, .txt)", type=["json", "pdf", "docx", "txt"])
 
-    # Rule set selection
     st.markdown("### 🏛️ Select Compliance Framework")
     rule_options = {
         "UK - FCA": "rules/uk-fca-esg.yaml",
@@ -177,7 +175,6 @@ elif section == "Upload Report":
             extracted_text = ""
             report_data = {}
 
-            # --- Shared helper for converting extracted text into JSON ---
             def convert_text_to_json(text):
                 import re
                 lines = text.split("\n")
@@ -189,114 +186,85 @@ elif section == "Upload Report":
                         value = match.group(2).strip()
                         data[key] = value
                 return data
-            
-            # --- Parse uploaded file ---
+
+            # --- Parse file ---
             if file_type == "application/json":
                 raw = uploaded_file.read().decode("utf-8")
                 report_data = json.loads(raw)
-
-                # Store in session_state
                 st.session_state["report_data"] = report_data
-                st.session_state["extracted_text"] = raw  # optional
-            
+                st.session_state["extracted_text"] = raw
                 st.json(report_data)
-            
+
             elif file_type == "application/pdf":
                 reader = PdfReader(uploaded_file)
                 extracted_text = "\n".join(page.extract_text() or "" for page in reader.pages)
                 st.text_area("📄 Extracted PDF Text", extracted_text, height=300)
-            
+
             elif file_type == "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
                 doc = docx.Document(uploaded_file)
-                extracted_text = "\n".join([p.text for p in doc.paragraphs])
+                extracted_text = "\n".join(p.text for p in doc.paragraphs)
                 st.text_area("📄 Extracted DOCX Text", extracted_text, height=300)
-            
+
             elif file_type == "text/plain":
                 extracted_text = uploaded_file.read().decode("utf-8")
                 st.text_area("📄 Text File Content", extracted_text, height=300)
-            
+
             else:
-                st.warning("⚠️ Unsupported file type. Please upload JSON, PDF, DOCX, or TXT.")
+                st.warning("⚠️ Unsupported file type.")
                 st.stop()
-            
-            # --- Convert Extracted Text into JSON if not already loaded ---
+
             if extracted_text:
                 report_data = convert_text_to_json(extracted_text)
-                st.markdown("### 📄 Auto-Parsed Data (Preview)")
-                st.json(report_data)
-            
-                # ✅ Ensure valid JSON structure before proceeding
                 if isinstance(report_data, dict):
-                    file_type = "application/json"
+                    st.markdown("### 📄 Auto-Parsed Data")
+                    st.json(report_data)
                 else:
-                    st.warning("⚠️ Failed to parse extracted text into valid JSON-like structure.")
-                    file_type = None  # Prevent false positives in downstream logic
+                    st.warning("⚠️ Failed to convert to structured data.")
+                    report_data = {}
 
-            # --- Run Compliance Check (only for JSON) ---
+            # --- Compliance Check (JSON only) ---
             from parser.local_evaluator import load_yaml_rule, evaluate_rule
             import math
-            
             rules = load_yaml_rule(rule_path)
-            input_payload = report_data if isinstance(report_data, dict) and report_data else {}
-            
-            # 🔍 Debug: Print expected rule fields vs. available report fields
-            st.write("🔍 Rule fields:", [rule.get("field") for rule in rules])
-            st.write("📂 Available report fields:", list(report_data.keys()))
-            
-            if input_payload:
-                with st.spinner("🔍 Running ESGine™ compliance check..."):
-                    result_list = evaluate_rule(rules, input_payload)
 
-                    # Safely count results
-                    passed = sum(1 for r in result_list if isinstance(r.get("status"), str) and "✅" in r["status"])
-                    failed = sum(1 for r in result_list if isinstance(r.get("status"), str) and "❌" in r["status"])
-            
-                    # Prevent NaN or zero division errors
+            if isinstance(report_data, dict) and report_data:
+                with st.spinner("🔍 Running ESGine™ compliance check..."):
+                    result_list = evaluate_rule(rules, report_data)
+
+                    passed = sum(1 for r in result_list if isinstance(r, dict) and "✅" in str(r.get("status")))
+                    failed = sum(1 for r in result_list if isinstance(r, dict) and "❌" in str(r.get("status")))
+
                     total = passed + failed
                     score = round((passed / total) * 100, 2) if total > 0 else 0
-                    score = score if not math.isnan(score) else 0
-            
+
                     result = {
                         "score": score,
                         "passed": passed,
                         "failed": failed,
                         "rules": result_list
                     }
-            
-                    # --- Display UI feedback ---
+
                     st.success("✅ ESG compliance analysis completed.")
                     st.metric("Compliance Score", f"{score}%")
                     st.markdown("### 📊 Rule Evaluation")
                     st.dataframe(pd.DataFrame(result["rules"]))
-            
-                    # --- Score Feedback ---
-                    if score < 50:
-                        st.error("🚨 Score below 50% — major compliance gaps.")
-                    elif score < 75:
-                        st.warning("⚠️ Score between 50–75% — moderate gaps, needs work.")
-                    else:
-                        st.success("✅ Score above 75% — strong ESG alignment.")
-            
-                    # --- Summary Pie Chart ---
+
+                    # Pie chart
                     if total > 0:
+                        import matplotlib.pyplot as plt
                         st.markdown("### 📈 Summary Chart")
-                        labels = ['Passed', 'Failed']
-                        sizes = [passed, failed]
                         fig, ax = plt.subplots()
-                        ax.pie(sizes, labels=labels, autopct='%1.1f%%', startangle=90, colors=['#2ecc71', '#e74c3c'])
-                        ax.axis('equal')
+                        ax.pie([passed, failed], labels=["Passed", "Failed"], autopct="%1.1f%%", startangle=90)
+                        ax.axis("equal")
                         st.pyplot(fig)
-                    else:
-                        st.warning("⚠️ No rules matched or evaluated. Nothing to visualize.")
 
+                    # --- Download Buttons ---
+                    st.download_button("📥 Download JSON Result", data=json.dumps(result, indent=2),
+                                       file_name="esgine_result.json", mime="application/json")
 
-                    # --- Download JSON ---
-                    st.markdown("### 📥 Download Reports")
-                    st.download_button("📦 Download JSON Result", data=json.dumps(result, indent=2),
-                                       file_name="esgine_compliance_result.json", mime="application/json")
-
-                    # --- PDF Report ---
+                    # PDF Generator (updated)
                     def generate_pdf_report(selected_rule, result):
+                        from fpdf import FPDF
                         pdf = FPDF()
                         pdf.add_page()
                         pdf.set_font("Arial", size=12)
@@ -308,10 +276,13 @@ elif section == "Upload Report":
                         pdf.cell(0, 10, "Rule Breakdown:", ln=True)
                         pdf.set_font("Arial", "", 11)
                         for rule in result["rules"]:
-                            status = rule["status"]
-                            field = rule.get("field", "N/A")
-                            pdf.multi_cell(0, 10, f"- {field} → {status}")
-                        return pdf.output(dest='S').encode('latin-1', 'replace')
+                            if isinstance(rule, dict):
+                                field = rule.get("field", "N/A")
+                                status = rule.get("status", "")
+                                pdf.multi_cell(0, 10, f"- {field} → {status}")
+                            else:
+                                pdf.multi_cell(0, 10, f"- {str(rule)}")
+                        return pdf.output(dest="S").encode("latin-1", "replace")
 
                     pdf_bytes = generate_pdf_report(selected_rule, result)
                     st.download_button("📄 Download ESGine™ PDF Report",
@@ -320,13 +291,12 @@ elif section == "Upload Report":
                                        mime="application/pdf")
 
             else:
-                st.warning("⚠️ Compliance check currently only supports structured JSON files. DOCX/PDF text can be extracted, but automated checks will come in a later version.")
+                st.warning("⚠️ Compliance check supports only JSON at this time.")
 
         except Exception as e:
             st.error(f"🚨 An unexpected error occurred: {str(e)}")
-           
-            # --- Always Show Footer ---
-            show_footer()
+
+        show_footer()
 
 # ✅ About Section
 elif section == "About":    
