@@ -78,9 +78,11 @@ def generate_pdf_report(selected_rule, result):
             status = rule.get("status", "")
             field = rule.get("field", "N/A")
             pdf.multi_cell(0, 10, f"- {field} → {status}")
+        elif isinstance(rule, str):
+            # Display string content safely (from PDF/DOCX uploads)
+            pdf.multi_cell(0, 10, rule[:2000])  # limit to avoid overflow
         else:
-            # It's not a dict (probably a string or something else), print as fallback
-            pdf.multi_cell(0, 10, f"- {rule}")
+            pdf.multi_cell(0, 10, f"- Unsupported rule format: {str(rule)}")
 
     # Ensure output with full unicode support
     return pdf.output(dest="S").encode("latin1", errors="ignore")
