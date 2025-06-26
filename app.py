@@ -44,23 +44,28 @@ font_path = ensure_dejavu_font()
 
 # --- PDF Template Class ---
 class PDF(FPDF):
+    def __init__(self):
+        super().__init__()
+        self.add_font("DejaVu", "", font_path, uni=True)
+        self.set_font("DejaVu", "", 12)
+
     def header(self):
         self.set_font("DejaVu", "", 14)
-        self.cell(0, 10, "ESGine™ Compliance Report", 0, 1, "C")
+        self.cell(0, 10, 'ESGine™ Compliance Report', 0, 1, 'C')
 
     def footer(self):
         self.set_y(-15)
         self.set_font("DejaVu", "", 8)
-        self.cell(0, 10, f"Page {self.page_no()}", 0, 0, "C")
+        self.cell(0, 10, f'Page {self.page_no()}', 0, 0, 'C')
 
 # --- PDF Report Generator Function ---
 def generate_pdf_report(selected_rule, result):
     pdf = PDF()
     pdf.add_page()
 
-    # Add the DejaVu font (with Unicode support) before setting it
+    # Add Unicode-capable font
     pdf.add_font("DejaVu", "", font_path, uni=True)
-    pdf.set_font("DejaVu", size=12)
+    pdf.set_font("DejaVu", "", 12)
 
     pdf.multi_cell(0, 10, f"📘 Selected Rule: {selected_rule}")
     pdf.multi_cell(0, 10, f"✅ Score: {result['score']}%")
@@ -73,7 +78,9 @@ def generate_pdf_report(selected_rule, result):
         field = rule.get("field", "N/A")
         pdf.multi_cell(0, 10, f"- {field} → {status}")
 
-    return pdf.output(dest="S").encode("utf-8")
+    # Ensure output with full unicode support
+    return pdf.output(dest="S").encode("latin1", errors="ignore")
+
 
 # --- Load ESGine Logo ---
 logo_path = "assets/esgine-logo.png"
