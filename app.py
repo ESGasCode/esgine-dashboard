@@ -136,7 +136,6 @@ def generate_pdf_report(selected_rule, result):
 
 # --- Load ESGine Logo ---
 logo_path = "assets/esgine-logo.png"
-logo = Image.open(logo_path)
 
 # --- Page Header ---
 col1, col2 = st.columns([1, 8])
