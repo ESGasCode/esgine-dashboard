@@ -73,32 +73,45 @@ class PDF(FPDF):
 
 # --- PDF Generator (Unicode Compatible) ---
 def generate_pdf_report(selected_rule, result):
+    from fpdf import FPDF
+
+    font_dir = "fonts"
+    font_regular = os.path.join(font_dir, "DejaVuSans.ttf")
+    font_bold = os.path.join(font_dir, "DejaVuSans-Bold.ttf")
+
     pdf = FPDF()
     pdf.add_page()
 
-    # Add DejaVu Unicode fonts (Regular and Bold)
-    pdf.add_font("DejaVu", "", "fonts/DejaVuSans.ttf", uni=True)
-    pdf.add_font("DejaVu", "B", "fonts/DejaVuSans-Bold.ttf", uni=True)
+    # Register both regular and bold fonts with unique names
+    pdf.add_font("DejaVu", "", font_regular, uni=True)
+    pdf.add_font("DejaVu", "B", font_bold, uni=True)
 
     pdf.set_font("DejaVu", "", 12)
-    pdf.multi_cell(0, 10, f"📘 Selected Rule: {selected_rule}")
-    pdf.multi_cell(0, 10, f"✅ Score: {result['score']}%")
-    pdf.multi_cell(0, 10, f"✅ Passed: {result['passed']} | ❌ Failed: {result['failed']}")
+    pdf.multi_cell(0, 10, f"Selected Rule: {selected_rule}")
+    pdf.multi_cell(0, 10, f"Score: {result.get('score', 0)}%")
+    pdf.multi_cell(0, 10, f"Passed: {result.get('passed', 0)} | Failed: {result.get('failed', 0)}")
     pdf.ln()
 
     pdf.set_font("DejaVu", "B", 12)
-    pdf.cell(0, 10, "📋 Rule Breakdown:", ln=True)
+    pdf.cell(0, 10, "Rule Breakdown:", ln=True)
 
     pdf.set_font("DejaVu", "", 11)
-    for rule in result["rules"]:
+    rules = result.get("rules", [])
+    if not isinstance(rules, list):
+        rules = [rules]  # fallback
+
+    for rule in rules:
         if isinstance(rule, dict):
             field = rule.get("field", "N/A")
-            status = rule.get("status", "")
-            pdf.multi_cell(0, 10, f"- {field} → {status}")
+            status = rule.get("status", "N/A")
+            description = rule.get("description", "")
+            status_icon = "✅" if status else "❌"
+            pdf.multi_cell(0, 10, f"- {field} {status_icon} {description}")
         else:
             pdf.multi_cell(0, 10, f"- {str(rule)}")
 
     return pdf.output(dest="S").encode("utf-8")
+
 
 # --- Load ESGine Logo ---
 logo_path = "assets/esgine-logo.png"
