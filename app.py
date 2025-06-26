@@ -229,16 +229,21 @@ elif section == "Upload Report":
 
 
             # --- Run Compliance Check (only for JSON) ---
+            # --- Run Compliance Check (only for JSON) ---
             from parser.local_evaluator import load_yaml_rule, evaluate_rule
             import math
             
             rules = load_yaml_rule(rule_path)
             input_payload = report_data if isinstance(report_data, dict) and report_data else {}
             
+            # 🔍 Debug: Print expected rule fields vs. available report fields
+            st.write("🔍 Rule fields:", [rule.get("field") for rule in rules])
+            st.write("📂 Available report fields:", list(report_data.keys()))
+            
             if input_payload:
                 with st.spinner("🔍 Running ESGine™ compliance check..."):
                     result_list = evaluate_rule(rules, input_payload)
-            
+
                     # Safely count results
                     passed = sum(1 for r in result_list if isinstance(r.get("status"), str) and "✅" in r["status"])
                     failed = sum(1 for r in result_list if isinstance(r.get("status"), str) and "❌" in r["status"])
