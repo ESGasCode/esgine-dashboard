@@ -57,7 +57,7 @@ class PDF(FPDF):
 def generate_pdf_report(selected_rule, result):
     pdf = PDF()
     pdf.add_page()
-    pdf.add_font("DejaVu", "", font_path, uni=True)
+    pdf.add_font("DejaVu", "", "fonts/DejaVuSans.ttf", uni=True)
     pdf.set_font("DejaVu", size=12)
 
     pdf.multi_cell(0, 10, f"📘 Selected Rule: {selected_rule}")
