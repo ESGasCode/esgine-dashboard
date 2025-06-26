@@ -3,7 +3,7 @@ import streamlit as st
 # --- Set Page Metadata ---
 st.set_page_config(
     page_title="ESGine Dashboard",
-    page_icon="🌿",
+    page_icon="v",
     layout="wide"
 )
 
@@ -60,32 +60,28 @@ class PDF(FPDF):
 
 # --- PDF Report Generator Function ---
 def generate_pdf_report(selected_rule, result):
-    pdf = PDF()
+    from fpdf import FPDF
+    pdf = FPDF()
     pdf.add_page()
-
-    # Add Unicode-capable font
-    pdf.add_font("DejaVu", "", font_path, uni=True)
-    pdf.set_font("DejaVu", "", 12)
-
-    pdf.multi_cell(0, 10, f"📘 Selected Rule: {selected_rule}")
-    pdf.multi_cell(0, 10, f"✅ Score: {result['score']}%")
-    pdf.multi_cell(0, 10, f"✅ Passed: {result['passed']} | ❌ Failed: {result['failed']}")
+    pdf.set_font("Arial", size=12)
+    pdf.multi_cell(0, 10, f"Selected Rule: {selected_rule}")
+    pdf.multi_cell(0, 10, f"Score: {result['score']}%")
+    pdf.multi_cell(0, 10, f"Passed: {result['passed']} | Failed: {result['failed']}")
     pdf.ln()
-    pdf.cell(0, 10, "📋 Rule Breakdown:", ln=True)
-
+    pdf.set_font("Arial", "B", 12)
+    pdf.cell(0, 10, "Rule Breakdown:", ln=True)
+    pdf.set_font("Arial", "", 11)
     for rule in result["rules"]:
         if isinstance(rule, dict):
-            status = rule.get("status", "")
             field = rule.get("field", "N/A")
+            status = rule.get("status", "")
             pdf.multi_cell(0, 10, f"- {field} → {status}")
-        elif isinstance(rule, str):
-            # Display string content safely (from PDF/DOCX uploads)
-            pdf.multi_cell(0, 10, rule[:2000])  # limit to avoid overflow
         else:
-            pdf.multi_cell(0, 10, f"- Unsupported rule format: {str(rule)}")
+            pdf.multi_cell(0, 10, f"- {str(rule)}")
+    return pdf.output(dest="S").encode("latin-1", "replace")
 
     # Ensure output with full unicode support
-    return pdf.output(dest="S").encode("latin1", errors="ignore")
+    return pdf.output(dest="S")
 
 # --- Load ESGine Logo ---
 logo_path = "assets/esgine-logo.png"
@@ -228,7 +224,7 @@ elif section == "Upload Report":
             rules = load_yaml_rule(rule_path)
 
             if isinstance(report_data, dict) and report_data:
-                with st.spinner("🔍 Running ESGine™ compliance check..."):
+                with st.spinner("🔍 Running ESGine compliance check..."):
                     result_list = evaluate_rule(rules, report_data)
 
                     passed = sum(1 for r in result_list if isinstance(r, dict) and "✅" in str(r.get("status")))
@@ -259,37 +255,21 @@ elif section == "Upload Report":
                         st.pyplot(fig)
 
                     # --- Download Buttons ---
-                    st.download_button("📥 Download JSON Result", data=json.dumps(result, indent=2),
-                                       file_name="esgine_result.json", mime="application/json")
-
-                    # PDF Generator (updated)
-                    def generate_pdf_report(selected_rule, result):
-                        from fpdf import FPDF
-                        pdf = FPDF()
-                        pdf.add_page()
-                        pdf.set_font("Arial", size=12)
-                        pdf.multi_cell(0, 10, f"Selected Rule: {selected_rule}")
-                        pdf.multi_cell(0, 10, f"Score: {result['score']}%")
-                        pdf.multi_cell(0, 10, f"✅ Passed: {result['passed']} | ❌ Failed: {result['failed']}")
-                        pdf.ln()
-                        pdf.set_font("Arial", "B", 12)
-                        pdf.cell(0, 10, "Rule Breakdown:", ln=True)
-                        pdf.set_font("Arial", "", 11)
-                        for rule in result["rules"]:
-                            if isinstance(rule, dict):
-                                field = rule.get("field", "N/A")
-                                status = rule.get("status", "")
-                                pdf.multi_cell(0, 10, f"- {field} → {status}")
-                            else:
-                                pdf.multi_cell(0, 10, f"- {str(rule)}")
-                        return pdf.output(dest="S").encode("latin-1", "replace")
-
+                    st.download_button(
+                        "📥 Download JSON Result",
+                        data=json.dumps(result, indent=2),
+                        file_name="esgine_result.json",
+                        mime="application/json"
+                    )
+                    
+                    # --- PDF Report Download using global Unicode-compatible generator ---
                     pdf_bytes = generate_pdf_report(selected_rule, result)
-                    st.download_button("📄 Download ESGine™ PDF Report",
-                                       data=pdf_bytes,
-                                       file_name="esgine_compliance_report.pdf",
-                                       mime="application/pdf")
-
+                    st.download_button(
+                        "📄 Download ESGine PDF Report",
+                        data=pdf_bytes,
+                        file_name="esgine_compliance_report.pdf",
+                        mime="application/pdf"
+                    )    
             else:
                 st.warning("⚠️ Compliance check supports only JSON at this time.")
 
