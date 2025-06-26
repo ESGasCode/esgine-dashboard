@@ -12,6 +12,7 @@ import os
 import sys
 import json
 import base64
+import urllib.request
 import mimetypes
 from datetime import datetime
 
@@ -28,7 +29,20 @@ from PyPDF2 import PdfReader
 # --- Local Modules ---
 from parser.local_evaluator import load_yaml_rule, evaluate_rule
 
-# --- PDF Template for Export (Optional Future Use) ---
+# --- Ensure DejaVu Font for Unicode support ---
+def ensure_dejavu_font():
+    font_dir = "fonts"
+    os.makedirs(font_dir, exist_ok=True)
+    font_path = os.path.join(font_dir, "DejaVuSans.ttf")
+    if not os.path.exists(font_path):
+        url = "https://github.com/dejavu-fonts/dejavu-fonts/raw/master/ttf/DejaVuSans.ttf"
+        urllib.request.urlretrieve(url, font_path)
+        print("✅ DejaVuSans.ttf downloaded.")
+    return font_path
+
+font_path = ensure_dejavu_font()
+
+# --- PDF Template Class ---
 class PDF(FPDF):
     def header(self):
         self.set_font('Arial', 'B', 14)
@@ -39,10 +53,31 @@ class PDF(FPDF):
         self.set_font('Arial', 'I', 8)
         self.cell(0, 10, f'Page {self.page_no()}', 0, 0, 'C')
 
-# --- Load Logo ---
+# --- PDF Report Generator Function ---
+def generate_pdf_report(selected_rule, result):
+    pdf = PDF()
+    pdf.add_page()
+    pdf.add_font("DejaVu", "", font_path, uni=True)
+    pdf.set_font("DejaVu", size=12)
+
+    pdf.multi_cell(0, 10, f"📘 Selected Rule: {selected_rule}")
+    pdf.multi_cell(0, 10, f"✅ Score: {result['score']}%")
+    pdf.multi_cell(0, 10, f"✅ Passed: {result['passed']} | ❌ Failed: {result['failed']}")
+    pdf.ln()
+    pdf.cell(0, 10, "📋 Rule Breakdown:", ln=True)
+
+    for rule in result["rules"]:
+        status = rule.get("status", "")
+        field = rule.get("field", "N/A")
+        pdf.multi_cell(0, 10, f"- {field} → {status}")
+
+    return pdf.output(dest='S').encode('utf-8')  # Support for emojis and multilingual content
+
+# --- Load ESGine Logo ---
 logo_path = "assets/esgine-logo.png"
 logo = Image.open(logo_path)
 
+# --- Page Header ---
 col1, col2 = st.columns([1, 8])
 with col1:
     st.image(logo, width=90)
