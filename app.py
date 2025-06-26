@@ -137,10 +137,21 @@ def generate_pdf_report(selected_rule, result):
 # --- Load ESGine Logo ---
 logo_path = "assets/esgine-logo.png"
 
+if os.path.exists(logo_path):
+    try:
+        logo = Image.open(logo_path)
+    except Exception as e:
+        logo = None
+        st.warning("⚠️ Failed to load ESGine logo.")
+else:
+    logo = None
+    st.warning("⚠️ ESGine logo file not found.")
+
 # --- Page Header ---
 col1, col2 = st.columns([1, 8])
 with col1:
-    st.image(logo, width=90)
+    if logo:
+        st.image(logo, width=90)
 with col2:
     st.markdown("""
         <h1 style='margin-bottom: 0; font-size: 2.5rem;'>ESGine</h1>
