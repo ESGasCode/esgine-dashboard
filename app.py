@@ -74,9 +74,13 @@ def generate_pdf_report(selected_rule, result):
     pdf.cell(0, 10, "📋 Rule Breakdown:", ln=True)
 
     for rule in result["rules"]:
-        status = rule.get("status", "")
-        field = rule.get("field", "N/A")
-        pdf.multi_cell(0, 10, f"- {field} → {status}")
+        if isinstance(rule, dict):
+            status = rule.get("status", "")
+            field = rule.get("field", "N/A")
+            pdf.multi_cell(0, 10, f"- {field} → {status}")
+        else:
+            # Fallback for unexpected formats (e.g., plain strings)
+            pdf.multi_cell(0, 10, f"- {rule}")
 
     # Ensure output with full unicode support
     return pdf.output(dest="S").encode("latin1", errors="ignore")
@@ -227,8 +231,6 @@ elif section == "Upload Report":
                     st.warning("⚠️ Failed to parse extracted text into valid JSON-like structure.")
                     file_type = None  # Prevent false positives in downstream logic
 
-
-            # --- Run Compliance Check (only for JSON) ---
             # --- Run Compliance Check (only for JSON) ---
             from parser.local_evaluator import load_yaml_rule, evaluate_rule
             import math
