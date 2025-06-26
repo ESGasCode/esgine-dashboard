@@ -256,11 +256,11 @@ elif section == "Upload Report":
                     rules = load_yaml_rule(rule_path)
                     result_list = evaluate_rule(rules, report_data)
 
-                    passed = sum(1 for r in result_list if isinstance(r, dict) and "✅" in str(r.get("status")))
-                    failed = sum(1 for r in result_list if isinstance(r, dict) and "❌" in str(r.get("status")))
+                    passed = sum(1 for r in result_list if isinstance(r, dict) and r.get("status") is True)
+                    failed = sum(1 for r in result_list if isinstance(r, dict) and r.get("status") is False)
                     total = passed + failed
                     score = round((passed / total) * 100, 2) if total > 0 else 0
-
+                    
                     result = {
                         "score": score,
                         "passed": passed,
